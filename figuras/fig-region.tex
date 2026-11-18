@@ -1,55 +1,70 @@
 % =====================================================================
-% Figura: planteamiento del problema de contorno (recinto V, frontera S).
-% Estilo de los apuntes de Mecánica: sin marco, superficies azules
-% translúcidas y trazos finos. Fuentes rayadas: conocidas dentro de V
-% (celeste, contorno continuo) y desconocidas fuera (gris, contorno
-% punteado). Vectores r, r', R; elemento dS' con su normal exterior.
+% Figura: planteamiento del problema de contorno.
+% Recinto arbitrario V (contorno libre suave) sobre ejes en perspectiva; elemento de volumen dV' en
+% r'; vectores r, r', R = r - r'; elemento dS' con normal exterior n.
+% Región con carga conocida rayada en celeste; fuentes exteriores
+% (desconocidas) rayadas en gris con contorno punteado. Todas las fuentes
+% son copias reducidas y giradas del contorno de V (misma forma libre). Recuadro con el
+% problema que se plantea.
 % =====================================================================
 \begin{tikzpicture}[scale=1.0]
-  % ---------------------------------------------------- recinto V y S
-  \path[fill=azul,fill opacity=0.17,draw=azul,line width=0.75pt]
-    plot[smooth cycle,tension=0.75] coordinates
-    {(0,0) (2.2,-0.5) (4.6,0.2) (5.2,2.0) (3.8,3.3) (1.4,3.0) (-0.3,1.8)};
-  % ---------------------------------------------------- fuentes conocidas (en V)
-  \tikzset{fuenteV/.style={pattern={Lines[angle=45,distance=2.3pt,line width=0.45pt]},
-      pattern color=celeste,draw=celeste,line width=0.55pt},
-    fuenteExt/.style={pattern={Lines[angle=-45,distance=2.6pt,line width=0.4pt]},
+  % ---------------------------------------------------- ejes
+  \coordinate (O) at (0,0);
+  \draw[eje] (O) -- (0,4.75) node[above,rotulogris] {$z$};
+  \draw[eje] (O) -- (7.3,0) node[right,rotulogris] {$y$};
+  \draw[eje] (O) -- (-1.25,-1.15) node[below left=-1pt,rotulogris] {$x$};
+  % ---------------------------------------------------- recinto V (forma libre)
+  \path[fill=azul,fill opacity=0.15,draw=azul,line width=0.8pt]
+    plot[smooth cycle,tension=0.7] coordinates
+    {(1.55,3.85) (1.95,4.3) (2.55,4.05) (3.05,4.35) (3.75,4.2) (3.95,3.75)
+     (3.6,3.25) (4.0,2.75) (3.8,2.1) (3.2,1.75) (2.55,1.95) (1.9,1.7)
+     (1.45,2.15) (1.55,2.75) (1.3,3.3)};
+  % región donde rho(r') no es nula (rayada)
+  \path[pattern={Lines[angle=45,distance=2.4pt,line width=0.4pt]},pattern color=celeste!75,
+        draw=celeste,line width=0.5pt]
+    plot[smooth cycle,tension=0.7] coordinates
+    {(2.229,3.076) (2.450,3.221) (2.677,3.047) (2.923,3.117) (3.204,2.974) (3.237,2.760) (3.032,2.587) (3.145,2.329) (2.986,2.076) (2.691,1.995) (2.437,2.154) (2.133,2.122) (1.993,2.364) (2.104,2.608) (2.060,2.870)};
+  % ---------------------------------------------------- fuentes exteriores
+  \tikzset{fuenteExt/.style={pattern={Lines[angle=-45,distance=2.6pt,line width=0.4pt]},
       pattern color=gristexto!80,draw=gristexto!80,line width=0.5pt,
       dash pattern=on 1.6pt off 1.2pt}}
-  \path[fuenteV] plot[smooth cycle,tension=0.8] coordinates
-    {(0.72,1.15) (1.05,0.82) (1.6,0.92) (1.72,1.38) (1.3,1.66) (0.85,1.55)};
-  \path[fuenteV] plot[smooth cycle,tension=0.8] coordinates
-    {(3.62,0.72) (3.95,0.5) (4.3,0.7) (4.22,1.02) (3.85,1.08)};
-  \node[rotulo,text=celeste,anchor=east] at (0.62,1.25) {$\rho(\vrp)$};
-  % ---------------------------------------------------- fuentes exteriores
-  \path[fuenteExt] plot[smooth cycle,tension=0.8] coordinates
-    {(6.6,3.05) (7.0,2.75) (7.55,2.95) (7.45,3.4) (6.95,3.5)};
-  \path[fuenteExt] plot[smooth cycle,tension=0.8] coordinates
-    {(6.35,-0.55) (6.7,-0.8) (7.05,-0.55) (6.85,-0.25) (6.5,-0.25)};
-  \path[fuenteExt] plot[smooth cycle,tension=0.8] coordinates
-    {(-1.25,3.25) (-0.95,3.0) (-0.55,3.2) (-0.7,3.5) (-1.1,3.55)};
-  \node[rotulogris,anchor=north] at (6.75,-0.95) {fuentes exteriores};
-  % ---------------------------------------------------- elemento dS' y normales
-  \draw[celeste,line width=1.3pt,line cap=butt]
-    ($(5.2,2.0)+(-0.25*0.27,-0.25*0.963)$) -- ($(5.2,2.0)+(0.25*0.27,0.25*0.963)$);
-  \draw[vectorgris,draw=celeste] (5.2,2.0) -- ++(0.963*0.75,-0.27*0.75)
-    node[right,rotulo,text=celeste] {$\un$};
-  \node[rotulo,text=celeste,anchor=west] at (5.32,2.38) {$\dd S'$};
-  \draw[vectorgris,draw=celeste] (1.4,3.0) -- ++(-0.17*0.7,0.985*0.7)
-    node[above,rotulo,text=celeste] {$\un$};
-  % ---------------------------------------------------- vectores de posición
-  \coordinate (O) at (-0.9,-1.55);
-  \coordinate (rp) at (1.2,1.25);
-  \coordinate (r) at (3.9,2.15);
-  \draw[gristexto,line width=0.5pt,-{Stealth[length=4.5pt,width=3.6pt]}] (O) -- (rp)
-    node[pos=0.45,left=1pt,rotulo,text=gristexto] {$\vrp$};
-  \draw[gristexto,line width=0.5pt,-{Stealth[length=4.5pt,width=3.6pt]}] (O) -- (r)
-    node[pos=0.42,below right=-1pt,rotulo,text=gristexto] {$\vr$};
-  \draw[vector] (rp) -- (r) node[pos=0.47,above=1pt,rotulo,text=azul] {$\vR=\vr-\vrp$};
-  \fill[texto] (O) circle (1.3pt) node[left=1pt,rotulogris] {$O$};
-  \fill[texto] (rp) circle (1.3pt);
-  \fill[texto] (r) circle (1.6pt) node[right=2pt,rotulo] {$P$};
+  \path[fuenteExt] plot[smooth cycle,tension=0.7] coordinates
+    {(5.391,4.195) (5.411,4.375) (5.602,4.417) (5.673,4.576) (5.871,4.660) (5.998,4.584) (5.998,4.401) (6.182,4.347) (6.245,4.152) (6.157,3.963) (5.963,3.901) (5.847,3.727) (5.659,3.760) (5.580,3.925) (5.424,4.017)};
+  \path[fuenteExt] plot[smooth cycle,tension=0.7] coordinates
+    {(5.378,1.417) (5.537,1.385) (5.560,1.211) (5.697,1.134) (5.757,0.950) (5.679,0.843) (5.514,0.857) (5.451,0.696) (5.272,0.655) (5.110,0.748) (5.069,0.927) (4.922,1.045) (4.967,1.211) (5.121,1.269) (5.216,1.402)};
+  \path[fuenteExt] plot[smooth cycle,tension=0.7] coordinates
+    {(-1.045,2.130) (-1.201,2.192) (-1.193,2.374) (-1.320,2.477) (-1.347,2.675) (-1.248,2.771) (-1.083,2.727) (-0.990,2.880) (-0.800,2.889) (-0.650,2.765) (-0.641,2.575) (-0.513,2.428) (-0.588,2.266) (-0.755,2.235) (-0.876,2.117)};
+  \node[rotulogris,anchor=north] at (5.4,0.6) {fuentes exteriores};
+  % ---------------------------------------------------- normal y dS'
+  \coordinate (B) at (1.3,3.3);
+  \draw[celeste,line width=1.3pt,line cap=butt] ($(B)+(80:0.2)$) -- ($(B)+(260:0.2)$);
+  \draw[vectorgris,draw=celeste] (B) -- ++(172:0.75) node[left,rotulo,text=celeste] {$\un$};
+  \node[rotulo,text=celeste,anchor=south east] at ($(B)+(-0.02,0.24)$) {$\dd S'$};
+  % ---------------------------------------------------- vectores
+  \coordinate (rp) at (2.5,2.65);
+  \coordinate (P) at (6.6,3.2);
+  \draw[gristexto,line width=0.55pt,-{Stealth[length=4.5pt,width=3.6pt]}] (O) -- ($(rp)+(-0.09,-0.1)$)
+    node[pos=0.5,left=2pt,rotulo,text=gristexto] {$\vrp$};
+  \draw[gristexto,line width=0.55pt,-{Stealth[length=4.5pt,width=3.6pt]}] (O) -- (P)
+    node[pos=0.6,below right=-1pt,rotulo,text=gristexto] {$\vr$};
+  \draw[vector] ($(rp)+(0.15,0.04)$) -- (P) node[pos=0.6,above=2pt,rotulo,text=azul] {$\vR=\vr-\vrp$};
+  % elemento de volumen dV' (cubo en perspectiva)
+  \begin{scope}[shift={(rp)},line width=0.45pt]
+    \def\s{0.2}
+    \filldraw[fill=fondo,draw=texto] (-\s/2,-\s/2) rectangle (\s/2,\s/2);
+    \filldraw[fill=panelclaro,draw=texto] (-\s/2,\s/2) -- ++(0.08,0.07) -- ++(\s,0) -- (\s/2,\s/2) -- cycle;
+    \filldraw[fill=panel,draw=texto] (\s/2,-\s/2) -- ++(0.08,0.07) -- ++(0,\s) -- (\s/2,\s/2) -- cycle;
+  \end{scope}
+  \node[rotulo,anchor=north west,fill=panel,inner sep=1pt,rounded corners=1pt] at ($(rp)+(0.14,-0.12)$) {$\dd V'$};
+  \fill[texto] (P) circle (1.6pt) node[right=2pt,rotulo] {$P$};
+  \fill[texto] (O) circle (1.2pt) node[below right=1pt,rotulogris] {$O$};
   % ---------------------------------------------------- rótulos del recinto
-  \node[rotulo,text=azul] at (2.6,2.7) {$V$};
-  \node[rotulo,text=azul,anchor=west] at (4.75,0.05) {$S=\partial V$};
+  \node[rotulo,text=azul] at (1.25,4.4) {$V$};
+  \node[rotulo,text=azul,anchor=west] at (4.05,4.5) {$S=\partial V$};
+  % ---------------------------------------------------- recuadro del problema
+  \node[anchor=west,fill=panel,draw=azulborde,line width=0.5pt,rounded corners=1.5pt,
+        inner sep=6pt,align=left,font=\small,text=texto] at (7.75,2.1)
+    {$\nablav\cdot(\eps\nablav\varphi)=-\rho$\ \ en $V$\\[5pt]
+     $\varphi\big|_{S}$\ \ o\ \ $\pdn{\varphi}\Big|_{S}$\\[5pt]
+     $\vR=\vr-\vrp,\quad R=\abs{\vR}$};
 \end{tikzpicture}
