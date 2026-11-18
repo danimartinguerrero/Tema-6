@@ -1,0 +1,56 @@
+% =====================================================================
+% Figura: independencia del camino a partir de Stokes.
+% (a) Dos caminos C1 y C2 con los mismos extremos r0 -> r.
+% (b) C1 - C2 = C1 + (-C2): se recorre C1 a la ida y C2 a la vuelta; la
+%     curva cerrada resultante es el borde de una superficie Sigma
+%     (translúcida). Sentido horario => normal entrante (regla de la mano
+%     derecha). Como rot E = 0, la circulación es nula y ambas integrales
+%     de línea coinciden.
+% =====================================================================
+\begin{tikzpicture}
+  \tikzset{
+    flechamedia/.style={postaction={decorate},decoration={markings,
+      mark=at position #1 with {\arrow{Stealth[length=5pt,width=4pt]}}}},
+    caminoA/.style={draw=azul,line width=0.9pt},
+    caminoB/.style={draw=celeste!55!white,line width=0.9pt},
+  }
+  \def\CuA{(0,0) .. controls (1.2,2.2) and (3.6,2.4) .. (5,0.6)}
+  \def\CuB{(0,0) .. controls (1.5,-1.6) and (3.8,-1.4) .. (5,0.6)}
+  % ---------------------------------------------------- (a) dos caminos
+  \begin{scope}
+    \draw[caminoA,flechamedia=0.5] \CuA;
+    \draw[caminoB,flechamedia=0.5] \CuB;
+    \node[rotulo,text=azul] at (2.45,2.05) {$C_1$};
+    \node[rotulo,text=celeste!55!white] at (2.6,-1.5) {$C_2$};
+    \fill[texto] (0,0) circle (1.6pt) node[left=2pt,rotulo] {$\vr_0$};
+    \fill[texto] (5,0.6) circle (1.6pt) node[right=2pt,rotulo] {$\vr$};
+    \node[rotulogris] at (2.5,2.75) {(a) Dos caminos con los mismos extremos};
+    \node[rotulo] at (2.5,-2.35)
+      {$\displaystyle\int_{C_1}\vE\cdot\dd\bm l\ \overset{?}{=}\ \int_{C_2}\vE\cdot\dd\bm l$};
+  \end{scope}
+  % ---------------------------------------------------- (b) curva cerrada
+  \begin{scope}[shift={(7.6,0)}]
+    % superficie Sigma encerrada (translúcida)
+    \fill[azul,fill opacity=0.16]
+      (0,0) .. controls (1.2,2.2) and (3.6,2.4) .. (5,0.6)
+            .. controls (3.8,-1.4) and (1.5,-1.6) .. (0,0) -- cycle;
+    \draw[caminoA,flechamedia=0.5] \CuA;
+    % -C2: mismo trazo recorrido de r a r0
+    \draw[caminoB,flechamedia=0.5]
+      (5,0.6) .. controls (3.8,-1.4) and (1.5,-1.6) .. (0,0);
+    \node[rotulo,text=azul] at (2.45,2.05) {$C_1$};
+    \node[rotulo,text=celeste!55!white] at (2.6,-1.5) {$-C_2$};
+    \node[rotulo,text=azul] at (1.55,0.25) {$\Sigma$};
+    % normal entrante (sentido horario): símbolo de vector hacia el papel
+    \begin{scope}[shift={(3.15,0.35)}]
+      \draw[texto,line width=0.5pt] (0,0) circle (0.13);
+      \draw[texto,line width=0.5pt] (-0.09,-0.09) -- (0.09,0.09) (-0.09,0.09) -- (0.09,-0.09);
+      \node[rotulo,anchor=west] at (0.17,0) {$\un$};
+    \end{scope}
+    \fill[texto] (0,0) circle (1.6pt) node[left=2pt,rotulo] {$\vr_0$};
+    \fill[texto] (5,0.6) circle (1.6pt) node[right=2pt,rotulo] {$\vr$};
+    \node[rotulogris] at (2.5,2.75) {(b) $C_1-C_2=C_1+(-C_2)$: curva cerrada};
+    \node[rotulo] at (2.5,-2.35)
+      {$\displaystyle\oint_{C_1-C_2}\!\vE\cdot\dd\bm l=\int_\Sigma(\rot\vE)\cdot\dd\bm S=0$};
+  \end{scope}
+\end{tikzpicture}
