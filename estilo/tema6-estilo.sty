@@ -41,6 +41,7 @@
 \RequirePackage{pagecolor}
 \pagecolor{fondo}
 \color{texto}
+\AtBeginDocument{\color{texto}}
 
 % ---------------------------------------------------------------- TikZ / pgfplots
 \RequirePackage{tikz}
@@ -186,7 +187,7 @@
     colback=panel,colframe=azulborde,boxrule=0.5pt,arc=2pt,
     left=8pt,right=8pt,top=10pt,bottom=6pt,
     before skip=12pt,after skip=10pt,
-    fontupper=\color{texto},
+    colupper=texto,coltext=texto,
     attach boxed title to top left={xshift=6pt,yshift*=-\tcboxedtitleheight/2},
     boxed title style={colback=fondo,colframe=azulmedio,boxrule=0.5pt,arc=1.5pt,
       left=4pt,right=4pt,top=1pt,bottom=1pt},
@@ -196,7 +197,7 @@
   \newenvironment{#1}[1][]{%
     \refstepcounter{entorno}%
     \def\tcbtituloaux{##1}%
-    \begin{tcolorbox}[pestana,fontupper=\color{texto}#3,
+    \begin{tcolorbox}[pestana,colupper=texto,fontupper=#3,
       title={\textsc{#2 \theentorno}\ifx\tcbtituloaux\empty\else\ {\color{texto}\itshape(##1)}\fi}]%
   }{\end{tcolorbox}}}
 \nuevoentorno{definicion}{Definición}{}
@@ -223,11 +224,11 @@
 % Bloques destacados con barra lateral: \begin{nota}{Motivación} ... \end{nota}
 \newtcolorbox{nota}[1]{enhanced,breakable,colback=panel,frame hidden,
   borderline west={1.6pt}{0pt}{azul},arc=0pt,left=9pt,right=9pt,top=5pt,bottom=5pt,
-  before skip=10pt,after skip=10pt,fontupper=\color{texto},
+  before skip=10pt,after skip=10pt,colupper=texto,
   before upper={{\color{azul}\textsc{#1}.}\ }}
 \newtcolorbox{notaoro}[1]{enhanced,breakable,colback=panel,frame hidden,
   borderline west={1.6pt}{0pt}{oro},arc=0pt,left=9pt,right=9pt,top=5pt,bottom=5pt,
-  before skip=10pt,after skip=10pt,fontupper=\color{texto},
+  before skip=10pt,after skip=10pt,colupper=texto,
   before upper={{\color{oro}\textsc{#1}.}\ }}
 
 % Ecuaciones enmarcadas
