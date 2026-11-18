@@ -1,0 +1,26 @@
+% =====================================================================
+% Figura: densidad de carga inducida en el plano y carga encerrada.
+%   sigma(r) = - q d / [2 pi (r^2+d^2)^{3/2}]        (adimensional: x = r/d)
+%   q_ind(<r)/q = -(1 - d/sqrt(r^2+d^2))              -> -1 cuando r -> inf
+% =====================================================================
+\begin{tikzpicture}
+  \begin{axis}[oscuro,name=sig,width=6.6cm,height=5.0cm,
+      xmin=-4,xmax=4,ymin=-1.12,ymax=0.12,
+      xlabel={$r/d$},ylabel={$2\pi d^{2}\sigma/q$},
+      ytick={-1,-0.5,0},xtick={-4,-2,0,2,4},grid=major,
+      title={(a) Densidad inducida: $-(1+x^{2})^{-3/2}$}]
+    \addplot[azul,domain=-4:4,samples=161,fill=azul,fill opacity=0.12,draw=none,forget plot]
+      {-1/(1+x^2)^(1.5)} \closedcycle;
+    \addplot[azul,domain=-4:4,samples=161] {-1/(1+x^2)^(1.5)};
+  \end{axis}
+  \begin{axis}[oscuro,at={(sig.east)},anchor=west,xshift=1.9cm,width=6.6cm,height=5.0cm,
+      xmin=0,xmax=8,ymin=-1.12,ymax=0.12,
+      xlabel={$r/d$},ylabel={$q_{\ind}(r)/q$},
+      ytick={-1,-0.5,0},xtick={0,2,4,6,8},grid=major,
+      title={(b) Carga inducida en $r'<r$},legend pos=north east]
+    \addplot[oro,domain=0:8,samples=161] {-(1-1/sqrt(1+x^2))};
+    \addlegendentry{$-\bigl(1-1/\sqrt{1+x^{2}}\bigr)$}
+    \addplot[gristexto,dashed,line width=0.5pt,domain=0:8] {-1};
+    \addlegendentry{asíntota $-1$}
+  \end{axis}
+\end{tikzpicture}

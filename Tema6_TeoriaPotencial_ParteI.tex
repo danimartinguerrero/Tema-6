@@ -1,0 +1,877 @@
+%% =====================================================================
+%%  Electromagnetismo I · Tema 6 · Teoría del potencial (Parte I)
+%%  Apuntes formalizados: Poisson y Laplace, identidades de Green,
+%%  representación integral, unicidad y método de las imágenes.
+%%  Compilar con:  pdflatex (dos pasadas)  ·  latexmk -pdf
+%% =====================================================================
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{estilo/tema6-estilo}
+
+\hypersetup{pdftitle={Tema 6. Teoría del potencial (Parte I)},
+            pdfauthor={Daniel Martín Guerrero},
+            pdfsubject={Electromagnetismo I}}
+
+\begin{document}
+
+%% ------------------------------------------------------------- PORTADA
+\begin{titlepage}
+  \newgeometry{top=1.6cm,bottom=1.6cm,left=2.4cm,right=2.4cm}
+  \centering
+  \includegraphics[width=4.4cm]{estilo/logo-usal.png}\par
+  \vspace{0.55cm}
+  {\color{gristexto}\rule{\textwidth}{0.4pt}}\par\vspace{0.35cm}
+  {\color{gristexto}\textsc{Facultad de Ciencias \quad$\cdot$\quad Grado en Física}}\par
+  \vspace{0.9cm}
+  {\color{azul}\large\textsc{Electromagnetismo I}}\par\vspace{0.12cm}
+  {\color{gristexto}\textsc{Tema 6 \textperiodcentered{} Parte I}}\par
+  \vspace{0.7cm}
+  {\fontsize{29}{34}\selectfont\bfseries\color{texto} Teoría del potencial}\par
+  \vspace{0.45cm}
+  {\color{gristexto}\rule{3.2cm}{0.4pt}}\par\vspace{0.4cm}
+  {\color{gristexto}\itshape Ecuaciones de Poisson y Laplace \,$\cdot$\, Identidades de Green
+   y representación integral\\ Unicidad de la solución \,$\cdot$\, Método de las imágenes}\par
+  \vspace{0.7cm}
+  \input{figuras/fig-portada.tex}\par
+  \vspace{0.55cm}
+  {\color{texto}\small
+   $\displaystyle \nablav\!\cdot\!\bigl(\eps\,\nablav\varphi\bigr)=-\rhof,\qquad
+   \int_{V}\bigl(\varphi\lap\psi-\psi\lap\varphi\bigr)\dV
+   =\oint_{S}\bigl(\varphi\,\nablav\psi-\psi\,\nablav\varphi\bigr)\dSv$}\par
+  \vfill
+  {\color{gristexto}\rule{\textwidth}{0.4pt}}\par\vspace{0.3cm}
+  \begin{minipage}[t]{0.32\textwidth}\centering
+    {\color{azul}\scriptsize\textsc{Autor}}\\[2pt]{\small Daniel Martín Guerrero}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.32\textwidth}\centering
+    {\color{azul}\scriptsize\textsc{Asignatura}}\\[2pt]{\small Electromagnetismo I}\\
+    {\color{gristexto}\footnotesize Teoría y seminario de problemas}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.32\textwidth}\centering
+    {\color{azul}\scriptsize\textsc{Apuntes formalizados}}\\[2pt]{\small\color{gristexto} Salamanca, curso 2026/2027}
+  \end{minipage}
+  \restoregeometry
+\end{titlepage}
+
+%% ------------------------------------------------------------- ÍNDICE
+\thispagestyle{plain}
+\tableofcontents
+\vspace{1cm}
+\begin{nota}{Convenios de notación}
+Vectores en negrita cursiva ($\vr,\vE,\vD$) y unitarios con acento ($\un,\uR,\uvec{u}_r$).
+$\vr$ es el \emph{punto de campo} (donde se evalúa $\varphi$) y $\vrp$ el \emph{punto fuente}
+(variable de integración); $\vR\defeq\vr-\vrp$, $R\defeq\abs{\vR}$, $\uR\defeq\vR/R$.
+Los operadores primados ($\gradp$, $\lapp$) derivan respecto de $\vrp$. $V$ es un recinto
+acotado de frontera $S=\partial V$ regular a trozos, con normal unitaria \emph{exterior} $\un$,
+$\dd\bm S=\un\dS$ y $\partial/\partial n\defeq\un\cdot\nablav$ (derivada normal).
+El medio es lineal e isótropo de permitividad $\eps(\vr)>0$; $\rho\equiv\rhof$ es la densidad
+de carga libre.
+\end{nota}
+\clearpage
+
+%% =====================================================================
+\section{El problema fundamental de la teoría del potencial}
+%% =====================================================================
+
+Hasta ahora, conocida la distribución de carga \emph{en todo el espacio}, el potencial se
+obtenía por integración directa y el campo mediante $\vE=-\nablav\varphi$. Este método deja de
+ser aplicable en cuanto los datos del problema son de otra naturaleza: es habitual conocer
+la carga sólo dentro de una región acotada $V$ y, en cambio, disponer de cierta información
+sobre el potencial (o el campo) en la frontera $S$ (\cref{fig:region}).
+
+\begin{nota}{Motivación}
+Queremos hallar el potencial \emph{dentro} de un recinto $V$ cuando las fuentes exteriores
+(conductores, cargas inducidas, dieléctricos\dots) son desconocidas. Estos problemas no se
+enmarcan en los vistos hasta ahora: la información que falta sobre el exterior debe
+sustituirse por \emph{condiciones de contorno} sobre $S$.
+\end{nota}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-region.tex}
+  \caption{Planteamiento general. En el recinto $V$ (frontera $S$, normal exterior $\un$) se
+  conoce $\rho(\vrp)$; las fuentes exteriores son desconocidas. $P$ es el punto de campo
+  $\vr$ y $\vrp$ recorre las fuentes; $\vR=\vr-\vrp$.}
+  \label{fig:region}
+\end{figure}
+
+\subsection{Herramientas de análisis vectorial}
+
+\begin{teorema}[de la divergencia, Gauss--Ostrogradski]\label{teo:gauss}
+Sea $V\subset\R^{3}$ un recinto acotado con frontera $S$ regular a trozos y normal exterior
+$\un$, y sea $\vA\in\Cont^{1}(V)\cap\Cont^{0}(\overline{V})$. Entonces
+\begin{equation}\label{eq:gauss}
+  \int_{V}\nablav\cdot\vA\dV=\oint_{S}\vA\dSv .
+\end{equation}
+\end{teorema}
+
+\begin{teorema}[de Stokes]\label{teo:stokes}
+Sea $\Sigma$ una superficie orientada regular a trozos con borde $\partial\Sigma$ recorrido
+en sentido positivo y $\vA\in\Cont^{1}$. Entonces
+\begin{equation}\label{eq:stokes}
+  \oint_{\partial\Sigma}\vA\cdot\dd\bm{l}=\int_{\Sigma}\bigl(\rot\vA\bigr)\cdot\dd\bm S .
+\end{equation}
+\end{teorema}
+
+\begin{observacion}[Existencia del potencial]
+En electrostática $\rot\vE=\bm 0$. Por \eqref{eq:stokes}, la circulación de $\vE$ es nula
+sobre toda curva cerrada de una región simplemente conexa, la integral de línea no depende
+del camino y existe $\varphi$ con $\vE=-\nablav\varphi$, definido salvo una constante aditiva.
+\end{observacion}
+
+\subsection{Ecuación de Poisson generalizada}
+
+\begin{proposicion}[Ecuación de Poisson generalizada]\label{prop:poisson}
+En un medio lineal e isótropo de permitividad $\eps(\vr)$, no necesariamente homogéneo, el
+potencial electrostático verifica
+\begin{equation}\label{eq:poisson-gen}
+  \caja{\nablav\cdot\bigl(\eps\,\nablav\varphi\bigr)=-\rho}
+\end{equation}
+o, equivalentemente,
+\begin{equation}\label{eq:poisson-desarrollada}
+  \lap\varphi=-\frac{1}{\eps}\Bigl(\rho+\nablav\eps\cdot\nablav\varphi\Bigr).
+\end{equation}
+\end{proposicion}
+
+\begin{demostracion}
+De $\nablav\cdot\vD=\rho$, $\vD=\eps\vE$ y $\vE=-\nablav\varphi$ se sigue
+$\nablav\cdot(-\eps\nablav\varphi)=\rho$, que es \eqref{eq:poisson-gen}. Desarrollando la
+divergencia de un producto,
+$\nablav\cdot(\eps\nablav\varphi)=\nablav\eps\cdot\nablav\varphi+\eps\lap\varphi=-\rho$, y
+despejando $\lap\varphi$ (pues $\eps>0$) se obtiene \eqref{eq:poisson-desarrollada}.
+\end{demostracion}
+
+\begin{observacion}[Problema directo e inverso]
+\eqref{eq:poisson-gen} relaciona cargas, potencial y medio. Conocidos $\eps$ y $\varphi$,
+calcular $\rho$ es un problema \emph{directo}: sólo exige derivar. El problema \emph{inverso}
+---hallar $\varphi$--- es mucho más difícil: tiene carácter integral, el medio puede no ser
+homogéneo y, en general, $\rho$ sólo se conoce en una región, con información adicional en su
+frontera. Este segundo problema es el objeto de la teoría del potencial.
+\end{observacion}
+
+\begin{corolario}[Ecuaciones de Poisson y de Laplace]\label{cor:poisson-laplace}
+Si el medio es homogéneo ($\eps=\cte$, por tanto $\nablav\eps=\bm 0$),
+\begin{equation}\label{eq:poisson}
+  \lap\varphi=-\frac{\rho}{\eps}\qquad\Bigl(\text{en el vacío: }\lap\varphi=-\frac{\rho}{\epsz}\Bigr),
+\end{equation}
+y en las regiones sin carga ($\rho=0$) el potencial satisface la \emph{ecuación de Laplace}
+\begin{equation}\label{eq:laplace}
+  \caja{\lap\varphi=0.}
+\end{equation}
+Las soluciones de \eqref{eq:laplace} se denominan \emph{funciones armónicas}.
+\end{corolario}
+
+\subsection{La función $1/R$ y la solución en espacio libre}
+
+\begin{lema}[Derivadas de $1/R$]\label{lem:1R}
+Sea $\vR=\vr-\vrp$, $R=\abs{\vR}$. Para $R\neq0$,
+\begin{equation}\label{eq:grad1R}
+  \nablav\Bigl(\frac1R\Bigr)=-\frac{\uR}{R^{2}},\qquad
+  \gradp\Bigl(\frac1R\Bigr)=+\frac{\uR}{R^{2}},
+\end{equation}
+y, en el sentido de las distribuciones,
+\begin{equation}\label{eq:lap1R}
+  \caja{\lap\Bigl(\frac1R\Bigr)=\lapp\Bigl(\frac1R\Bigr)=-4\pi\,\delta^{3}(\vr-\vrp).}
+\end{equation}
+\end{lema}
+
+\begin{demostracion}
+$R^{2}=\sum_i(x_i-x_i')^{2}$ da $\partial_{x_i}R=(x_i-x_i')/R$ y
+$\partial_{x_i'}R=-(x_i-x_i')/R$; por la regla de la cadena
+$\partial_{x_i}(1/R)=-(x_i-x_i')/R^{3}$, que es \eqref{eq:grad1R}; el cambio de signo para
+$\gradp$ procede de $\partial_{x_i'}R=-\partial_{x_i}R$.
+Para $R\neq0$, $\nablav\cdot(\vR/R^{3})=3/R^{3}-3R^{2}/R^{5}=0$, luego $\lap(1/R)=0$ fuera de
+$\vr=\vrp$. Integrando sobre una esfera $B_\epsilon$ centrada en $\vrp$ y aplicando
+\eqref{eq:gauss},
+\[
+  \int_{B_\epsilon}\lap\Bigl(\frac1R\Bigr)\dV
+  =\oint_{\partial B_\epsilon}\Bigl(-\frac{\uR}{R^{2}}\Bigr)\cdot\uR\,R^{2}\,\dd\Omega=-4\pi ,
+\]
+independientemente de $\epsilon$. Una distribución nula fuera de un punto y de integral $-4\pi$
+en todo entorno suyo es $-4\pi\delta^{3}(\vr-\vrp)$. Como $1/R$ es simétrica en
+$\vr\leftrightarrow\vrp$, lo mismo vale para $\lapp$.
+\end{demostracion}
+
+\begin{proposicion}[Potencial con todas las fuentes conocidas]\label{prop:coulomb}
+Si la densidad $\rho$ se conoce en todo el espacio, está acotada y tiene soporte compacto, y
+el medio es el vacío, la función
+\begin{equation}\label{eq:coulomb}
+  \varphi(\vr)=\frac{1}{4\pi\epsz}\int_{\R^{3}}\frac{\rho(\vrp)}{\abs{\vr-\vrp}}\dVp
+\end{equation}
+es solución de \eqref{eq:poisson} y se anula en el infinito.
+\end{proposicion}
+
+\begin{demostracion}
+Derivando bajo el signo integral y usando \eqref{eq:lap1R},
+\[
+  \lap\varphi(\vr)=\frac{1}{4\pi\epsz}\int\rho(\vrp)\,\lap\Bigl(\frac{1}{\abs{\vr-\vrp}}\Bigr)\dVp
+  =\frac{1}{4\pi\epsz}\int\rho(\vrp)\bigl[-4\pi\delta^{3}(\vr-\vrp)\bigr]\dVp=-\frac{\rho(\vr)}{\epsz}.
+\]
+Para $r\to\infty$, $\varphi\simeq Q/(4\pi\epsz r)\to0$.
+\end{demostracion}
+
+\subsection{La ecuación de Laplace en una dimensión}
+
+\begin{ejemplo}[Solución general 1D]
+Si $\varphi=\varphi(x)$, \eqref{eq:laplace} se reduce a $\varphi''(x)=0$, luego
+$\varphi(x)=Ax+B$, con $A,B$ fijadas por las condiciones de contorno, es decir, por el valor
+de $\varphi$ o de $\varphi'$ en la frontera de la región.
+\end{ejemplo}
+
+\begin{proposicion}[Valor medio y ausencia de extremos]\label{prop:valormedio}
+Si $\varphi$ es armónica en una región:
+\begin{enumerate}
+  \item \emph{(Valor medio.)} En 1D, $\varphi(x)=\tfrac12\bigl[\varphi(x+a)+\varphi(x-a)\bigr]$;
+  en 3D, $\varphi(\vr)$ es el promedio de $\varphi$ sobre cualquier esfera centrada en $\vr$
+  contenida en la región.
+  \item \emph{(Extremos.)} $\varphi$ no posee máximos ni mínimos locales estrictos en el
+  interior: sus extremos se alcanzan en la frontera.
+\end{enumerate}
+\end{proposicion}
+
+\begin{demostracion}[(caso 1D)]
+(i) $\tfrac12[A(x+a)+B+A(x-a)+B]=Ax+B$. (ii) Si $x_0$ fuese un máximo estricto,
+$\varphi(x_0\pm a)<\varphi(x_0)$ para $a$ pequeño y su promedio sería menor que
+$\varphi(x_0)$, contradiciendo (i). El caso 3D se sigue igual de la propiedad del valor medio
+esférico.
+\end{demostracion}
+
+\begin{observacion}[Consecuencia física]
+Una carga de prueba no puede estar en equilibrio estable bajo fuerzas puramente
+electrostáticas en una región sin carga (teorema de Earnshaw): $\varphi$ no tiene allí mínimos.
+\end{observacion}
+
+%% =====================================================================
+\section{Identidades de Green y representación integral}
+%% =====================================================================
+
+\subsection{Primera y segunda identidad de Green}
+
+\begin{teorema}[Primera identidad de Green]\label{teo:green1}
+Sean $\varphi,\psi\in\Cont^{2}(V)\cap\Cont^{1}(\overline V)$. Entonces
+\begin{equation}\label{eq:green1}
+  \caja{\int_{V}\Bigl(\varphi\,\lap\psi+\nablav\varphi\cdot\nablav\psi\Bigr)\dV
+  =\oint_{S}\varphi\,\nablav\psi\dSv
+  =\oint_{S}\varphi\,\pdn{\psi}\dS .}
+\end{equation}
+\end{teorema}
+
+\begin{demostracion}
+Se aplica \eqref{eq:gauss} al campo $\vA\defeq\varphi\,\nablav\psi$, cuya divergencia es
+$\nablav\cdot(\varphi\nablav\psi)=\varphi\lap\psi+\nablav\varphi\cdot\nablav\psi$. La segunda
+igualdad usa $\nablav\psi\cdot\un\dS=(\partial\psi/\partial n)\dS$.
+\end{demostracion}
+
+\begin{teorema}[Segunda identidad de Green]\label{teo:green2}
+Con las mismas hipótesis,
+\begin{equation}\label{eq:green2}
+  \caja{\int_{V}\Bigl(\varphi\,\lap\psi-\psi\,\lap\varphi\Bigr)\dV
+  =\oint_{S}\Bigl(\varphi\,\nablav\psi-\psi\,\nablav\varphi\Bigr)\dSv
+  =\oint_{S}\Bigl(\varphi\,\pdn{\psi}-\psi\,\pdn{\varphi}\Bigr)\dS .}
+\end{equation}
+\end{teorema}
+
+\begin{demostracion}
+Intercambiando $\varphi\leftrightarrow\psi$ en \eqref{eq:green1},
+$\int_V(\psi\lap\varphi+\nablav\psi\cdot\nablav\varphi)\dV=\oint_S\psi\nablav\varphi\dSv$.
+Restando de \eqref{eq:green1}, el término simétrico $\nablav\varphi\cdot\nablav\psi$ se cancela.
+\end{demostracion}
+
+\subsection{Representación integral del potencial}
+
+Aplicamos \eqref{eq:green2} con la variable de integración $\vrp\in V$ y el punto de campo
+$\vr\in V$ fijo, eligiendo (\cref{fig:region})
+\begin{equation}\label{eq:eleccion}
+  \varphi\equiv\varphi(\vrp)\ \text{(el potencial)},\qquad
+  \psi\equiv\frac1R=\frac{1}{\abs{\vr-\vrp}} .
+\end{equation}
+
+\begin{teorema}[Representación integral del potencial]\label{teo:repr}
+Sea $\varphi$ solución de \eqref{eq:poisson-gen} en $V$. Para todo $\vr\in V$,
+\begin{equation}\label{eq:repr}
+  \caja{\varphi(\vr)=\frac{1}{4\pi}\int_{V}\frac{\rho+\gradp\eps\cdot\gradp\varphi}{\eps\,R}\dVp
+  +\frac{1}{4\pi}\oint_{S}\Bigl[\frac1R\,\pdnp{\varphi}-\varphi\,\frac{\uR\cdot\un}{R^{2}}\Bigr]\dSp .}
+\end{equation}
+\end{teorema}
+
+\begin{demostracion}
+Con \eqref{eq:eleccion}, la segunda identidad \eqref{eq:green2} en las variables primadas es
+\begin{equation}\label{eq:repr-paso1}
+  \int_{V}\Bigl[\varphi(\vrp)\,\lapp\Bigl(\frac1R\Bigr)-\frac1R\,\lapp\varphi(\vrp)\Bigr]\dVp
+  =\oint_{S}\varphi\,\gradp\Bigl(\frac1R\Bigr)\dSvp-\oint_{S}\frac1R\,\gradp\varphi\dSvp .
+\end{equation}
+Se evalúa cada término:
+\begin{enumerate}
+  \item Por \eqref{eq:lap1R}, como $\vrp$ recorre $V$ y pasa por $\vrp=\vr$:
+  $\displaystyle\int_V\varphi(\vrp)\bigl[-4\pi\delta^{3}(\vr-\vrp)\bigr]\dVp=-4\pi\varphi(\vr)$.
+  \item Por \eqref{eq:poisson-desarrollada} en las variables primadas,
+  $\displaystyle-\frac1R\lapp\varphi=+\frac{\rho+\gradp\eps\cdot\gradp\varphi}{\eps R}$.
+  \item Por \eqref{eq:grad1R} y $\dd\bm S'=\un\dSp$:
+  $\displaystyle\gradp\Bigl(\frac1R\Bigr)\dSvp=\frac{\uR\cdot\un}{R^{2}}\dSp$
+  (sin signo $-$, pues se deriva respecto de $\vrp$).
+  \item $\displaystyle\gradp\varphi\dSvp=\pdnp{\varphi}\dSp$.
+\end{enumerate}
+Sustituyendo en \eqref{eq:repr-paso1},
+\[
+  -4\pi\varphi(\vr)+\int_V\frac{\rho+\gradp\eps\cdot\gradp\varphi}{\eps R}\dVp
+  =\oint_S\varphi\,\frac{\uR\cdot\un}{R^{2}}\dSp-\oint_S\frac1R\,\pdnp{\varphi}\dSp ,
+\]
+y despejando $\varphi(\vr)$ resulta \eqref{eq:repr}.
+\end{demostracion}
+
+\begin{observacion}[Punto exterior]
+Si $\vr\notin\overline V$, la delta del apartado (i) no actúa y el primer miembro de
+\eqref{eq:repr} se sustituye por $0$: la combinación de volumen y superficie se anula fuera
+de $V$. La representación sólo describe el potencial \emph{dentro} del recinto.
+\end{observacion}
+
+\begin{corolario}[Medio homogéneo]\label{cor:repr-homog}
+Si $\eps=\cte$ en $V$ ($\gradp\eps=\bm0$),
+\begin{equation}\label{eq:repr-homog}
+  \caja{\varphi(\vr)=\frac{1}{4\pi\eps}\int_{V}\frac{\rho(\vrp)}{R}\dVp
+  +\frac{1}{4\pi}\oint_{S}\Bigl(\frac1R\,\pdnp{\varphi}-\varphi\,\frac{\uR\cdot\un}{R^{2}}\Bigr)\dSp .}
+\end{equation}
+\end{corolario}
+
+\begin{observacion}[El término de volumen: carga libre más ligada]
+Con $\bm{P}=(\eps-\epsz)\vE$ y $\rho_b=-\nablav\cdot\bm{P}$,
+$\epsz\nablav\cdot\vE=\rho+\rho_b$; por otra parte \eqref{eq:poisson-desarrollada} da
+$-\epsz\lap\varphi=(\epsz/\eps)(\rho+\nablav\eps\cdot\nablav\varphi)$. Luego
+$(\rho+\nablav\eps\cdot\nablav\varphi)/\eps=(\rho+\rho_b)/\epsz$: el primer término de
+\eqref{eq:repr} es el potencial coulombiano de \emph{toda} la carga (libre y de polarización)
+contenida en $V$.
+\end{observacion}
+
+\begin{proposicion}[Estrato equivalente de Green]\label{prop:estrato}
+La integral de superficie de \eqref{eq:repr-homog} es el potencial creado, en un medio
+$\eps$, por una capa simple y una capa doble situadas sobre $S$,
+\begin{equation}\label{eq:estrato}
+  \sigma_{\mathrm{eq}}=\eps\,\pdnp{\varphi},\qquad
+  \bm\tau_{\mathrm{eq}}=-\eps\,\varphi\,\un ,
+\end{equation}
+con $\bm\tau$ el momento dipolar por unidad de área. Este \emph{estrato de Green} reproduce en
+$V$ la contribución de todas las fuentes exteriores al recinto.
+\end{proposicion}
+
+\begin{demostracion}
+Una carga $\sigma_{\mathrm{eq}}\dSp$ en $\vrp$ crea en $\vr$ el potencial
+$\sigma_{\mathrm{eq}}\dSp/(4\pi\eps R)$, que es el primer sumando con
+$\sigma_{\mathrm{eq}}=\eps\,\partial\varphi/\partial n'$. Un dipolo $\dd\bm p=\bm\tau\dSp$
+crea $\dd\bm p\cdot\vR/(4\pi\eps R^{3})=\bm\tau\cdot\uR\dSp/(4\pi\eps R^{2})$, que coincide
+con el segundo sumando, $-\varphi\,\uR\cdot\un/(4\pi R^{2})$, si $\bm\tau=-\eps\varphi\un$.
+\end{demostracion}
+
+\begin{corolario}[Recinto infinito]\label{cor:infinito}
+Si $S$ es una esfera de radio $r_S\to\infty$ y $\varphi=\mathcal O(1/r)$,
+$\partial\varphi/\partial n=\mathcal O(1/r^{2})$, la integral de superficie es
+$\mathcal O(1/r_S^{3})\cdot r_S^{2}\to0$ y se recupera
+\begin{equation}\label{eq:repr-inf}
+  \varphi(\vr)=\frac{1}{4\pi\eps}\int_{\R^{3}}\frac{\rho(\vrp)}{\abs{\vr-\vrp}}\dVp .
+\end{equation}
+\end{corolario}
+
+\begin{observacion}[Condiciones de Cauchy: exceso de datos]
+\eqref{eq:repr} expresa $\varphi$ en $V$ mediante las cargas de $V$ y el par
+$\bigl(\varphi,\partial\varphi/\partial n\bigr)$ sobre $S$ (\emph{condiciones de Cauchy}). Pero
+\emph{no} pueden prescribirse ambas arbitrariamente. En 1D, $\varphi=Ax+B$ con $\varphi(0)=0$,
+$\varphi(1)=1$ da ya $B=0$, $A=1$, es decir, $\varphi(x)=x$; añadir además $\varphi'(0)=2$
+haría el problema incompatible. La cuestión natural es: \emph{¿qué datos de contorno bastan
+para que la solución sea única?}
+\end{observacion}
+
+%% =====================================================================
+\section{Unicidad de la solución}
+%% =====================================================================
+
+\begin{definicion}[Condiciones de contorno]\label{def:cc}
+Sea el problema de Poisson \eqref{eq:poisson-gen} en $V$. Se prescribe sobre $S$:
+\begin{itemize}
+  \item \textbf{Dirichlet}: el valor del potencial, $\varphi\big|_S=f$.
+  \item \textbf{Neumann}: la derivada normal, $\partial\varphi/\partial n\big|_S=g$, es decir,
+  la componente normal del campo ($E_n=-\partial\varphi/\partial n$).
+  \item \textbf{Mixtas}: $S=S_D\cup S_N$ disjuntas, Dirichlet en $S_D$ y Neumann en $S_N$
+  (en cada punto, $\varphi$ \emph{o} $\partial\varphi/\partial n$).
+  \item \textbf{Cauchy}: $\varphi$ \emph{y} $\partial\varphi/\partial n$ sobre la misma
+  porción de $S$.
+\end{itemize}
+\end{definicion}
+
+\begin{lema}[Identidad energética]\label{lem:energia}
+Si $\Phi$ verifica $\nablav\cdot(\eps\nablav\Phi)=0$ en $V$, entonces
+\begin{equation}\label{eq:energia}
+  \caja{\int_{V}\eps\,\abs{\nablav\Phi}^{2}\dV=\oint_{S}\eps\,\Phi\,\pdn{\Phi}\dS .}
+\end{equation}
+\end{lema}
+
+\begin{demostracion}
+En la primera identidad \eqref{eq:green1}, escrita como
+$\int_V(\psi\lap\varphi+\nablav\psi\cdot\nablav\varphi)\dV=\oint_S\psi\nablav\varphi\dSv$, se
+toma $\varphi\equiv\Phi$ y $\psi\equiv\eps\Phi$:
+\[
+  \int_V\Bigl[\eps\Phi\lap\Phi+\nablav(\eps\Phi)\cdot\nablav\Phi\Bigr]\dV
+  =\oint_S\eps\Phi\,\nablav\Phi\dSv .
+\]
+Como $\nablav(\eps\Phi)=\Phi\nablav\eps+\eps\nablav\Phi$, el integrando vale
+\[
+  \Phi\underbrace{\bigl(\eps\lap\Phi+\nablav\eps\cdot\nablav\Phi\bigr)}_{=\nablav\cdot(\eps\nablav\Phi)=0}
+  +\eps\abs{\nablav\Phi}^{2}=\eps\abs{\nablav\Phi}^{2},
+\]
+y $\nablav\Phi\dSv=(\partial\Phi/\partial n)\dS$.
+\end{demostracion}
+
+\begin{teorema}[Unicidad]\label{teo:unicidad}
+Sea $\eps>0$ en $\overline V$. La solución de \eqref{eq:poisson-gen} en $V$ es única si sobre
+$S$ se prescriben condiciones de Dirichlet o mixtas (con $S_D\neq\varnothing$), y es única
+salvo una constante aditiva ---es decir, el campo $\vE$ es único--- con condiciones de
+Neumann.
+\end{teorema}
+
+\begin{demostracion}
+Sean $\varphi_1,\varphi_2$ dos soluciones con los mismos datos:
+$\nablav\cdot(\eps\nablav\varphi_1)=\nablav\cdot(\eps\nablav\varphi_2)=-\rho$. Su diferencia
+$\Phi\defeq\varphi_1-\varphi_2$ verifica $\nablav\cdot(\eps\nablav\Phi)=0$ y, por
+\eqref{eq:energia},
+\[
+  \int_V\eps\abs{\nablav\Phi}^{2}\dV=\oint_S\eps\,\Phi\,\pdn{\Phi}\dS .
+\]
+\begin{itemize}
+  \item \emph{Dirichlet.} $\varphi_1=\varphi_2$ en $S\Rightarrow\Phi|_S=0$ y el segundo miembro
+  se anula. El integrando del primero es continuo y no negativo ($\eps>0$), luego
+  $\nablav\Phi=\bm0$ en $V$: $\varphi_1=\varphi_2+\cte$. Por continuidad hasta $S$, donde
+  $\Phi=0$, la constante es nula y $\varphi_1\equiv\varphi_2$.
+  \item \emph{Neumann.} $\partial\varphi_1/\partial n=\partial\varphi_2/\partial n$ en
+  $S\Rightarrow\partial\Phi/\partial n|_S=0$; de nuevo $\nablav\Phi=\bm0$ y
+  $\varphi_1=\varphi_2+\cte$, ahora sin poder fijar la constante: el potencial queda
+  determinado salvo una constante y el campo $\vE=-\nablav\varphi$ es único.
+  \item \emph{Mixtas.} En cada punto de $S$ se anula $\Phi$ o $\partial\Phi/\partial n$; el
+  producto es nulo en todo $S$ y $\nablav\Phi=\bm0$. Si $S_D\neq\varnothing$, $\Phi=0$ en
+  $S_D$ fija la constante a cero.
+\end{itemize}
+\end{demostracion}
+
+\begin{observacion}[Cauchy: problema sobredeterminado]
+Prescribir simultáneamente $\varphi$ y $\partial\varphi/\partial n$ en todo $S$ es más de lo
+necesario: en general los datos son incompatibles y el problema \emph{no tiene solución}
+(ejemplo 1D de la sección anterior). Un problema bien planteado especifica, en cada punto de
+$S$, uno solo de los dos datos.
+\end{observacion}
+
+\begin{observacion}[Compatibilidad en Neumann]
+Por \eqref{eq:gauss} aplicado a $\eps\nablav\varphi$,
+$\oint_S\eps\,\partial\varphi/\partial n\dS=-\int_V\rho\dV$: los datos de Neumann no son
+arbitrarios, deben respetar la ley de Gauss.
+\end{observacion}
+
+\begin{corolario}[Principio de superposición para conductores]\label{cor:superposicion}
+Sea $V$ la región exterior a $N$ conductores de superficies $S_1,\dots,S_N$ (más, en su caso,
+una frontera lejana a potencial nulo), sin carga en $V$ y con los conductores a potenciales
+$V_1,\dots,V_N$. Si $\varphi_k$ es la solución de Laplace con $\varphi_k|_{S_j}=\delta_{jk}$,
+\begin{equation}\label{eq:superposicion}
+  \varphi(\vr)=\sum_{k=1}^{N}V_k\,\varphi_k(\vr)
+\end{equation}
+es \emph{la} solución del problema.
+\end{corolario}
+
+\begin{demostracion}
+$\lap$ es lineal, luego $\lap\varphi=\sum_kV_k\lap\varphi_k=0$, y en $S_j$,
+$\varphi=\sum_kV_k\delta_{jk}=V_j$. Por el teorema de unicidad~\ref{teo:unicidad} (Dirichlet), es la única.
+\end{demostracion}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-superposicion.tex}
+  \caption{Funciones base $\varphi_k$ de \eqref{eq:superposicion} para cuatro conductores
+  (solución numérica de $\lap\varphi=0$). En cada panel el conductor dorado está a
+  potencial $1$ y los demás a $0$; líneas blancas: equipotenciales. Cualquier
+  configuración $(V_1,\dots,V_4)$ se obtiene combinando linealmente los cuatro paneles.}
+  \label{fig:superposicion}
+\end{figure}
+
+\begin{ejemplo}[Cavidad vacía en un conductor]\label{ej:cavidad}
+Sea un conductor con una cavidad $V$ sin carga (\cref{fig:cavidad}b). Todo el conductor es
+equipotencial, $\varphi|_{S_a}=V_0$ (Dirichlet). La función constante $\varphi\equiv V_0$
+satisface $\lap\varphi=0$ y la condición de contorno; por el teorema~\ref{teo:unicidad} es la
+solución. Así $\vE=\bm0$ en la cavidad y $\sigma_a=\epsz E_n=0$: la carga del conductor
+reside íntegramente en su superficie exterior, cualesquiera que sean las fuentes de fuera.
+\end{ejemplo}
+
+\begin{ejemplo}[Apantallamiento electrostático]\label{ej:apantallamiento}
+Si la cavidad contiene una carga $q$ (\cref{fig:cavidad}a), el problema interior queda
+determinado por $q$ y por $\varphi|_{S_a}=V_0$: las fuentes externas sólo cambian $V_0$, es
+decir, una constante, y no modifican $\vE$ dentro. Todas las líneas de $q$ mueren en la
+pared, que adquiere una carga total $-q$; si la corteza es neutra, su superficie exterior
+lleva $+q$, distribuida según el campo exterior y \emph{no} según la posición de $q$.
+\end{ejemplo}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-cavidad.tex}
+  \caption{(a) Corteza conductora neutra con una carga $q$ en la cavidad y una carga
+  exterior $q_{\mathrm e}$; líneas de campo exactas (método de las imágenes). Cada marca
+  $-$/$+$ señala dónde muere o nace una línea, de modo que su densidad es proporcional a
+  $\abs{\sigma}$. Dentro, el campo sólo depende de $q$; fuera, la superficie lleva $+q$
+  redistribuida por $q_{\mathrm e}$. (b) Cavidad vacía en un conductor a tierra:
+  $\varphi\equiv0$ dentro y $\sigma_a=0$.}
+  \label{fig:cavidad}
+\end{figure}
+
+\clearpage
+%% =====================================================================
+\section{Método de las imágenes}
+%% =====================================================================
+
+\subsection{Fundamento}
+
+Sea $\rho(\vr)$ la densidad de carga libre conocida en $V$ y $\rho_{\mathrm{ext}}$ la
+(desconocida) de fuera ---por ejemplo, la inducida en conductores---. Por linealidad,
+$\varphi=\varphi_1+\varphi_2$, con
+\begin{equation}\label{eq:descomposicion}
+  \nablav\cdot(\eps\nablav\varphi_1)=-\rho\quad(\text{Poisson}),\qquad
+  \nablav\cdot(\eps\nablav\varphi_2)=0\quad(\text{Laplace})\qquad\forall\,\vr\in V,
+\end{equation}
+donde $\varphi_1$ procede de las cargas de dentro y $\varphi_2$ de $\rho_{\mathrm{ext}}$. La
+suma sigue verificando $\nablav\cdot(\eps\nablav\varphi)=-\rho$ en $V$: \emph{añadir fuentes
+exteriores no altera la ecuación de Poisson dentro del recinto}, sólo los valores en $S$.
+
+\begin{definicion}[Método de las imágenes]\label{def:imagenes}
+Consiste en encontrar un conjunto de cargas ficticias (\emph{cargas imagen}), situadas
+\emph{fuera} de $V$, tales que, sumadas a las cargas reales de $V$, su potencial verifique
+la ecuación de Poisson en $V$ y las condiciones de contorno sobre $S$.
+\end{definicion}
+
+\begin{proposicion}[Justificación]\label{prop:imagenes}
+Si $\varphi=\varphi_{\mathrm{real}}+\varphi_{\mathrm{img}}$ satisface las condiciones de
+contorno del problema original, entonces $\varphi$ es \emph{la} solución en $V$.
+\end{proposicion}
+
+\begin{demostracion}
+Las imágenes están fuera de $V$, así que $\lap\varphi_{\mathrm{img}}=0$ en $V$ y
+$\lap\varphi=-\rho/\eps$ allí. Como $\varphi$ verifica además las condiciones de contorno, el
+teorema de unicidad~\ref{teo:unicidad} garantiza que es la única solución en $V$.
+\end{demostracion}
+
+\begin{observacion}[Advertencias]
+\begin{itemize}
+  \item La dificultad reside en \emph{adivinar} las imágenes; la forma de las líneas de
+  campo y la experiencia con problemas ya resueltos (dipolo, equipotenciales esféricas\dots)
+  son la guía.
+  \item Las imágenes no existen físicamente y deben estar fuera de $V$.
+  \item El potencial obtenido sólo es válido en $V$; fuera (p.\ ej.\ dentro de un conductor)
+  el potencial real es otro.
+\end{itemize}
+\end{observacion}
+
+\begin{nota}{Procedimiento operativo}
+(1) Delimitar $V$ y sus condiciones de contorno. (2) Proponer imágenes fuera de $V$ guiándose
+por la simetría. (3) Imponer las condiciones en puntos cómodos para fijar sus valores y
+posiciones. (4) Comprobar que la condición se cumple en \emph{toda} $S$ e invocar la
+unicidad. (5) Derivar: $\vE=-\nablav\varphi$, $\sigma=\eps E_n$ sobre el conductor,
+$q_{\ind}=\oint\sigma\dS$ y la fuerza como interacción con las imágenes.
+\end{nota}
+
+\subsection{Carga puntual frente a un plano conductor a tierra}
+
+\begin{problema}[Plano conductor infinito a tierra]\label{prob:plano}
+Una carga puntual $q$ se sitúa en el vacío a una distancia $d$ de un plano conductor
+indefinido conectado a tierra. Determínense el potencial y el campo en la región de la carga,
+la densidad de carga inducida y la carga inducida total, y la fuerza que se ejercen carga y
+plano.
+\end{problema}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-plano-lineas.tex}
+  \caption{No conocemos \emph{a priori} la carga inducida. (a) El campo de $q$ aislada no
+  sirve: sus líneas no son normales al conductor y lo atravesarían. (b) Líneas reales
+  (igual flujo por línea): mueren perpendicularmente en el plano; las marcas son sus pies,
+  más densos bajo la carga, donde $\abs{\sigma_{\ind}}$ es mayor.}
+  \label{fig:plano-lineas}
+\end{figure}
+
+\begin{resolucion}
+\textbf{1. Regiones y datos.} Región I ($z<0$): conductor a tierra, $\varphi\equiv0$.
+Región II ($z>0$) $\equiv V$: $\lap\varphi=-(q/\epsz)\,\delta^{3}(\vr-d\,\uvec u_z)$, con
+$\varphi(z=0)=0$ y $\varphi\to0$ en el infinito (Dirichlet).
+
+\textbf{2. Imagen.} Las líneas de la \cref{fig:plano-lineas}b son las de un dipolo: se
+coloca una carga imaginaria $-q$ a distancia $-d$ (\cref{fig:plano-imagen}). Con simetría de
+revolución, en cilíndricas,
+\[
+  \vr=r\,\uvec u_r+z\,\uvec u_z,\quad \vrp_1=d\,\uvec u_z,\quad
+  \vR_1=\vr-\vrp_1=r\,\uvec u_r+(z-d)\,\uvec u_z,\quad R_1=\sqrt{r^{2}+(z-d)^{2}},
+\]
+y análogamente $\vR_2=r\,\uvec u_r+(z+d)\,\uvec u_z$, $R_2=\sqrt{r^{2}+(z+d)^{2}}$:
+\begin{equation}\label{eq:plano-phi}
+  \caja{\varphi(r,z)=\frac{q}{4\pi\epsz}\Bigl(\frac1{R_1}-\frac1{R_2}\Bigr)
+  =\frac{q}{4\pi\epsz}\Biggl[\frac{1}{\sqrt{r^{2}+(z-d)^{2}}}-\frac{1}{\sqrt{r^{2}+(z+d)^{2}}}\Biggr],\qquad z\ge0.}
+\end{equation}
+
+\textbf{3. Verificación.} $\varphi(r,0)=0$ pues $R_1=R_2$ en $z=0$; $\varphi\to0$ en el
+infinito; en $z>0$, $\lap\varphi=-(q/\epsz)\delta^{3}(\vr-d\uvec u_z)$, ya que la delta de la
+imagen está en $z=-d\notin V$. Por la proposición~\ref{prop:imagenes}, \eqref{eq:plano-phi} es la
+solución.
+
+\textbf{4. Campo.}
+$\vE=-\pd{\varphi}{r}\,\uvec u_r-\pd{\varphi}{z}\,\uvec u_z
+=\dfrac{q}{4\pi\epsz}\Bigl(\dfrac{\vR_1}{R_1^{3}}-\dfrac{\vR_2}{R_2^{3}}\Bigr)$:
+\begin{equation}\label{eq:plano-E}
+  \vE(r,z)=\frac{q\,r}{4\pi\epsz}\Biggl[\frac{1}{R_1^{3}}-\frac{1}{R_2^{3}}\Biggr]\uvec u_r
+  +\frac{q}{4\pi\epsz}\Biggl[\frac{z-d}{R_1^{3}}-\frac{z+d}{R_2^{3}}\Biggr]\uvec u_z .
+\end{equation}
+En $z=0$ la componente radial se anula ($R_1=R_2$): $\vE$ es normal al conductor.
+
+\textbf{5. Densidad inducida.} La condición de contorno en un conductor con normal
+$\un=\uvec u_z$ hacia $V$ es $\sigma=\epsz E_n=\epsz E_z(r,0^{+})$:
+\begin{equation}\label{eq:plano-sigma}
+  \sigma_{\ind}(r)=\frac{q}{4\pi}\Biggl[\frac{-d}{(r^{2}+d^{2})^{3/2}}-\frac{d}{(r^{2}+d^{2})^{3/2}}\Biggr]
+  =\caja{-\frac{q\,d}{2\pi\,(r^{2}+d^{2})^{3/2}}.}
+\end{equation}
+
+\textbf{6. Carga inducida total.} Integrando en anillos, $\dd S=2\pi r\,\dd r$:
+\[
+  q_{\ind}=\int_0^{\infty}\sigma_{\ind}\,2\pi r\,\dd r
+  =-\frac{q}{2\pi}\int_0^{2\pi}\!\!\dd\phi\int_0^{\infty}\frac{d\,r\,\dd r}{(r^{2}+d^{2})^{3/2}}
+  =-q\,d\Bigl[-\frac{1}{(r^{2}+d^{2})^{1/2}}\Bigr]_0^{\infty}=-q .
+\]
+Coincide con la imagen: todas las líneas que salen de $q$ terminan en el plano
+(\cref{fig:plano-sigma}).
+
+\textbf{7. Fuerza sobre la carga.} Se usa sólo el campo de las cargas inducidas, que en $V$
+es el de la imagen (el campo total incluiría la autofuerza de $q$):
+\begin{equation}\label{eq:plano-Fq}
+  \vF_q=q\,\vE_{-q}(0,d)=-\frac{q^{2}}{4\pi\epsz}\frac{2d}{\bigl[(2d)^{2}\bigr]^{3/2}}\,\uvec u_z
+  =\caja{-\frac{q^{2}}{4\pi\epsz(2d)^{2}}\,\uvec u_z}
+\end{equation}
+El plano atrae a la carga con la fuerza de Coulomb entre $q$ y su imagen, a distancia $2d$.
+
+\textbf{8. Fuerza sobre el plano.} Sobre un conductor actúa la presión electrostática
+$P=\sigma^{2}/(2\epsz)$, dirigida hacia el exterior del conductor ($+\uvec u_z$):
+\[
+  F_{\mathrm{plano}}=\int P\dS=\frac{1}{2\epsz}\Bigl(\frac{q d}{2\pi}\Bigr)^{2}2\pi\int_0^{\infty}\frac{r\,\dd r}{(r^{2}+d^{2})^{3}}
+  =\frac{q^{2}d^{2}}{4\pi\epsz}\Bigl[-\frac14\frac{1}{(r^{2}+d^{2})^{2}}\Bigr]_0^{\infty}
+  =\frac{q^{2}d^{2}}{16\pi\epsz}\frac{1}{d^{4}},
+\]
+es decir, $\vF_{\mathrm{plano}}=+\dfrac{q^{2}}{4\pi\epsz(2d)^{2}}\uvec u_z=-\vF_q$: se verifica
+la ley de acción y reacción.
+\end{resolucion}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-plano-imagen.tex}
+  \caption{(a) Geometría en cilíndricas $(r,z)$ con la carga imagen $-q$ en $z=-d$.
+  (b) Problema equivalente: en $V$ ($z>0$) las líneas (blancas) y equipotenciales (oro) de
+  $q$ y $-q$ coinciden con las reales; el plano $z=0$ es la equipotencial $\varphi=0$. Las
+  líneas punteadas, en $z<0$, son virtuales.}
+  \label{fig:plano-imagen}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-plano-sigma.tex}
+  \caption{(a) Densidad de carga inducida \eqref{eq:plano-sigma} frente a $x=r/d$: máxima
+  bajo la carga, $\sigma(0)=-q/(2\pi d^{2})$. (b) Carga inducida contenida en un disco de radio
+  $r$, $q_{\ind}(r)/q=-\bigl(1-d/\sqrt{r^{2}+d^{2}}\bigr)$, que tiende a $-q$.}
+  \label{fig:plano-sigma}
+\end{figure}
+
+\subsection{Carga puntual frente a una esfera conductora a tierra}
+
+\begin{problema}[Esfera conductora a tierra]\label{prob:esfera}
+Una carga puntual $q$ se sitúa en el vacío a una distancia $d$ del centro de una esfera
+conductora de radio $a<d$ conectada a tierra. Obténganse el potencial y el campo fuera de la
+esfera, la densidad y la carga inducidas y la fuerza sobre $q$.
+\end{problema}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-esfera-lineas.tex}
+  \caption{Esfera a tierra ($d/a=2.2$). (a) Sólo una fracción $a/d$ del flujo de $q$ termina
+  en la esfera; marcas: pies de las líneas ($\propto\abs{\sigma}$). (b) Problema equivalente:
+  $q$ y su imagen $q'=-qa/d$ en $d'=a^{2}/d$. Fuera de la esfera las líneas y las
+  equipotenciales (oro) son las reales; la esfera es la equipotencial $\varphi=0$.}
+  \label{fig:esfera-lineas}
+\end{figure}
+
+\begin{resolucion}
+\textbf{1. Regiones y datos.} Origen en el centro y eje $z$ hacia $q$ (\cref{fig:esfera-geo}).
+Región I ($r\le a$): $\varphi\equiv0$. Región II ($r\ge a$) $\equiv V$: Poisson con la carga
+$q$, $\varphi(a,\theta)=0$ y $\varphi\to0$ en el infinito.
+
+\textbf{2. Ensayo.} Las líneas (\cref{fig:esfera-lineas}a) sugieren una única imagen $q'<0$
+sobre el eje, \emph{dentro} de la esfera (fuera de $V$), a distancia $d'<a$ del centro. En
+esféricas, por el teorema del coseno,
+\begin{equation}\label{eq:esfera-ensayo}
+  \varphi(r,\theta)=\frac{1}{4\pi\epsz}\Bigl(\frac{q}{R}+\frac{q'}{R'}\Bigr)
+  =\frac{1}{4\pi\epsz}\Biggl[\frac{q}{(r^{2}+d^{2}-2rd\cos\theta)^{1/2}}
+  +\frac{q'}{(r^{2}+d'^{2}-2rd'\cos\theta)^{1/2}}\Biggr].
+\end{equation}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-esfera-geometria.tex}
+  \caption{Geometría: $R=\abs{\vr-d\,\uvec u_z}$, $R'=\abs{\vr-d'\uvec u_z}$. Los puntos
+  $P$ ($\theta=0$) y $Q$ ($\theta=\pi$) de la esfera fijan $q'$ y $d'$.}
+  \label{fig:esfera-geo}
+\end{figure}
+
+\textbf{3. Condiciones en $P$ y $Q$.} En $P=(a,0)$, con $(a^{2}+d^{2}-2ad)^{1/2}=\abs{a-d}=d-a$
+(pues $d>a$) y $(a^{2}+d'^{2}-2ad')^{1/2}=a-d'$ (pues $a>d'$):
+\[
+  0=\varphi_P=\frac{1}{4\pi\epsz}\Bigl(\frac{q}{d-a}+\frac{q'}{a-d'}\Bigr)
+  \quad\Longrightarrow\quad q'=-q\,\frac{a-d'}{d-a}.
+\]
+En $Q=(a,\pi)$, $\cos\theta=-1$:
+\[
+  0=\varphi_Q=\frac{1}{4\pi\epsz}\Bigl(\frac{q}{a+d}+\frac{q'}{a+d'}\Bigr)
+  \quad\Longrightarrow\quad\frac{q}{a+d}=-\frac{q'}{a+d'}=q\,\frac{a-d'}{d-a}\,\frac{1}{a+d'} .
+\]
+Luego $(d-a)(a+d')=(a-d')(a+d)$, esto es,
+$ad+dd'-a^{2}-ad'=a^{2}+ad-ad'-dd'$, de donde $2dd'=2a^{2}$ y
+\begin{equation}\label{eq:esfera-imagen}
+  \caja{d'=\frac{a^{2}}{d},\qquad
+  q'=-q\,\frac{a-a^{2}/d}{d-a}=-q\,\frac{a(d-a)}{d(d-a)}=-q\,\frac{a}{d}.}
+\end{equation}
+
+\textbf{4. Verificación en toda la esfera.} Con \eqref{eq:esfera-imagen}, en $r=a$:
+\begin{align*}
+  R'\big|_{r=a}&=\Bigl(a^{2}+\frac{a^{4}}{d^{2}}-2\frac{a^{3}}{d}\cos\theta\Bigr)^{1/2}
+  =\frac{a}{d}\bigl(d^{2}+a^{2}-2ad\cos\theta\bigr)^{1/2}=\frac ad\,R\big|_{r=a},\\
+  \frac{q'}{R'}\Big|_{r=a}&=\frac{-q\,a/d}{(a/d)\,R}\Big|_{r=a}=-\frac{q}{R}\Big|_{r=a},
+\end{align*}
+así que $\varphi(a,\theta)=0$ para todo $\theta$, no sólo en $P$ y $Q$. Por unicidad,
+\begin{equation}\label{eq:esfera-phi}
+  \caja{\varphi(r,\theta)=\frac{q}{4\pi\epsz}\Biggl[\frac{1}{(r^{2}+d^{2}-2rd\cos\theta)^{1/2}}
+  -\frac{a/d}{\bigl[r^{2}+(a^{2}/d)^{2}-2r(a^{2}/d)\cos\theta\bigr]^{1/2}}\Biggr],\qquad r\ge a.}
+\end{equation}
+
+\textbf{5. Campo.} $\vE=-\pd{\varphi}{r}\uvec u_r-\frac1r\pd{\varphi}{\theta}\uvec u_\theta$.
+Como $\partial_r(r^{2}+d^{2}-2rd\cos\theta)^{-1/2}=-(r-d\cos\theta)(\cdots)^{-3/2}$ y
+$\partial_\theta(\cdots)^{-1/2}=-rd\sin\theta\,(\cdots)^{-3/2}$,
+\begin{equation}\label{eq:esfera-E}
+\begin{aligned}
+  \vE(r,\theta)={}&\frac{q}{4\pi\epsz}\Biggl[\frac{r-d\cos\theta}{(r^{2}+d^{2}-2rd\cos\theta)^{3/2}}
+  -\frac{(r-d'\cos\theta)\,a/d}{(r^{2}+d'^{2}-2rd'\cos\theta)^{3/2}}\Biggr]\uvec u_r\\
+  &+\frac{q\,d\sin\theta}{4\pi\epsz}\Biggl[\frac{1}{(r^{2}+d^{2}-2rd\cos\theta)^{3/2}}
+  -\frac{(a/d)^{3}}{(r^{2}+d'^{2}-2rd'\cos\theta)^{3/2}}\Biggr]\uvec u_\theta ,
+\end{aligned}
+\end{equation}
+donde en $\uvec u_\theta$ se ha usado $(a/d)\,d'/d=(a/d)^{3}$. En $r=a$ el corchete de
+$\uvec u_\theta$ se anula (mismo cálculo del paso 4): $\vE$ es normal a la esfera.
+
+\textbf{6. Densidad inducida.} Con $D\defeq(a^{2}+d^{2}-2ad\cos\theta)^{1/2}$ y $R'|_{r=a}=(a/d)D$,
+\[
+  E_r(a,\theta)=\frac{q}{4\pi\epsz}\,\frac{(a-d\cos\theta)-\frac da\,(d-a\cos\theta)}{D^{3}}
+  =\frac{q}{4\pi\epsz}\,\frac{a^{2}-d^{2}}{a\,D^{3}},
+\]
+y $\sigma=\epsz E_r(a,\theta)$:
+\begin{equation}\label{eq:esfera-sigma}
+  \caja{\sigma(\theta)=-\frac{q}{4\pi a}\,\frac{d^{2}-a^{2}}{\bigl(a^{2}+d^{2}-2ad\cos\theta\bigr)^{3/2}}.}
+\end{equation}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-esfera-sigma.tex}
+  \caption{Densidad inducida \eqref{eq:esfera-sigma} en unidades de
+  $\sigma_0\defeq q/(4\pi a^{2})$. (a) Al acercar la carga ($d/a\to1$), la distribución se
+  concentra en el polo próximo. (b) $\abs{\sigma}$ sobre la esfera para $d/a=2$: el
+  máximo, $\abs{\sigma(0)}=3\sigma_0$, frente a la carga.}
+  \label{fig:esfera-sigma}
+\end{figure}
+
+\textbf{7. Carga inducida.} Con $\dd S=2\pi a^{2}\sin\theta\,\dd\theta$ y $u=\cos\theta$,
+\[
+  \int_{-1}^{1}\frac{\dd u}{(a^{2}+d^{2}-2adu)^{3/2}}
+  =\frac{1}{ad}\Bigl[\frac{1}{(a^{2}+d^{2}-2adu)^{1/2}}\Bigr]_{-1}^{1}
+  =\frac{1}{ad}\Bigl(\frac{1}{d-a}-\frac{1}{d+a}\Bigr)=\frac{2}{d\,(d^{2}-a^{2})},
+\]
+\begin{equation}\label{eq:esfera-qind}
+  q_{\ind}=-\frac{q(d^{2}-a^{2})}{4\pi a}\,2\pi a^{2}\,\frac{2}{d(d^{2}-a^{2})}=\caja{-q\,\frac ad=q'.}
+\end{equation}
+
+\textbf{8. Fuerza sobre $q$.} Es la interacción con la imagen, a distancia
+$d-d'=(d^{2}-a^{2})/d$:
+\begin{equation}\label{eq:esfera-F}
+  \vF_q=\frac{q\,q'}{4\pi\epsz\,(d-d')^{2}}\,\uvec u_z
+  =\caja{-\frac{q^{2}\,a\,d}{4\pi\epsz\,(d^{2}-a^{2})^{2}}\,\uvec u_z}
+\end{equation}
+\end{resolucion}
+
+
+
+\begin{observacion}[Límites de la fuerza]
+Sea $x=d/a$; entonces $\abs{\vF_q}\,4\pi\epsz a^{2}/q^{2}=x/(x^{2}-1)^{2}$
+(\cref{fig:esfera-fuerza}).
+\begin{itemize}
+  \item \emph{Cerca de la superficie}, $d=a+h$ con $h\ll a$:
+  $ad/(d^{2}-a^{2})^{2}\simeq a^{2}/(2ah)^{2}=1/(4h^{2})$ y
+  $\abs{\vF_q}\simeq q^{2}/\bigl[4\pi\epsz(2h)^{2}\bigr]$: se recupera el plano \eqref{eq:plano-Fq}.
+  \item \emph{Lejos}, $d\gg a$: $\abs{\vF_q}\simeq q^{2}a/(4\pi\epsz d^{3})$, la atracción del
+  dipolo inducido.
+\end{itemize}
+\end{observacion}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-esfera-fuerza.tex}
+  \caption{Fuerza sobre $q$ frente a la esfera a tierra \eqref{eq:esfera-F} y sus límites: el
+  plano conductor a distancia $h=d-a$ ($x\to1$) y el régimen $x^{-3}$ para $x\gg1$.}
+  \label{fig:esfera-fuerza}
+\end{figure}
+
+\begin{observacion}[Problema inverso: carga en el interior]
+Si $q$ está dentro de la esfera ($d<a$) y $V$ es ahora el interior, la imagen pasa al
+exterior con las mismas fórmulas, $q'=-qa/d$ en $d'=a^{2}/d>a$ (\cref{fig:esfera-interior}).
+La carga inducida en la cara interior es $q_{\ind}=-q$ (todas las líneas de $q$ mueren en la
+esfera), que ya \emph{no} coincide con la imagen: $\abs{q'}=qa/d>q$. La imagen sólo reproduce el
+potencial en $V$.
+\end{observacion}
+
+\begin{figure}[!htb]
+  \centering
+  \input{figuras/fig-esfera-interior.tex}
+  \caption{Carga $q$ dentro de una esfera a tierra ($d/a=0.45$): las líneas reales
+  (continuas) mueren en la esfera; su prolongación virtual (punteada) converge en la imagen
+  exterior $q'$.}
+  \label{fig:esfera-interior}
+\end{figure}
+
+%% =====================================================================
+\section{Resumen operativo}
+%% =====================================================================
+
+\begin{center}
+\captionof{table}{Resultados fundamentales de la parte I del tema.}
+\label{tab:resumen}
+\renewcommand{\arraystretch}{1.6}
+\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{>{\color{azul}}l>{$}l<{$}}
+\toprule
+Poisson generalizada & \nablav\cdot(\eps\nablav\varphi)=-\rho,\qquad
+  \lap\varphi=-\tfrac{1}{\eps}\bigl(\rho+\nablav\eps\cdot\nablav\varphi\bigr)\\
+Función $1/R$ & \gradp(1/R)=\uR/R^{2},\qquad \lapp(1/R)=-4\pi\delta^{3}(\vr-\vrp)\\
+1.ª identidad de Green & \int_V(\varphi\lap\psi+\nablav\varphi\cdot\nablav\psi)\dV=\oint_S\varphi\,\partial_n\psi\dS\\
+2.ª identidad de Green & \int_V(\varphi\lap\psi-\psi\lap\varphi)\dV=\oint_S(\varphi\,\partial_n\psi-\psi\,\partial_n\varphi)\dS\\
+Representación ($\eps=\cte$) & \varphi(\vr)=\tfrac{1}{4\pi\eps}\!\int_V\!\tfrac{\rho}{R}\dVp
+  +\tfrac{1}{4\pi}\!\oint_S\!\bigl(\tfrac1R\partial_{n'}\varphi-\varphi\tfrac{\uR\cdot\un}{R^{2}}\bigr)\dSp\\
+Identidad energética & \int_V\eps\abs{\nablav\Phi}^{2}\dV=\oint_S\eps\,\Phi\,\partial_n\Phi\dS\\
+Unicidad & \text{Dirichlet/mixtas: única;\ \ Neumann: salvo constante;\ \ Cauchy: sobredeterminado}\\
+\midrule
+Plano a tierra & -q\ \text{en}\ z=-d,\quad \sigma=-\tfrac{qd}{2\pi(r^{2}+d^{2})^{3/2}},\quad
+  \vF_q=-\tfrac{q^{2}}{4\pi\epsz(2d)^{2}}\uvec u_z\\
+Esfera a tierra & q'=-q\tfrac ad,\ d'=\tfrac{a^{2}}{d},\quad
+  \sigma=-\tfrac{q(d^{2}-a^{2})}{4\pi a D^{3}},\quad \vF_q=-\tfrac{q^{2}ad}{4\pi\epsz(d^{2}-a^{2})^{2}}\uvec u_z\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{notaoro}{Claves para el seminario}
+\begin{itemize}
+  \item La fuerza sobre una carga real se calcula con el campo de las \emph{imágenes} (o
+  de la carga inducida), nunca con el campo total.
+  \item $\sigma=\eps E_n$ con $\un$ dirigido del conductor hacia $V$; comprobar siempre
+  $q_{\ind}=\oint\sigma\dS$ contra el flujo de las líneas.
+  \item Las imágenes deben quedar \emph{fuera} de $V$; los límites (p.\ ej.\ $d\to a$ en la
+  esfera, que recupera el plano) son una comprobación rápida del resultado.
+\end{itemize}
+\end{notaoro}
+
+\end{document}

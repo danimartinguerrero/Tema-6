@@ -1,0 +1,292 @@
+%% =====================================================================
+%%  tema6-estilo.sty
+%%  Estilo oscuro compartido por los apuntes formalizados y el esquema
+%%  simbólico del Tema 6 (Electromagnetismo I). Reproduce la estética de
+%%  los apuntes de Mecánica I: fondo negro, paneles grafito, acento azul,
+%%  Latin Modern, entornos tipo «pestaña» y figuras vectoriales TikZ.
+%% =====================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{estilo/tema6-estilo}[2026/11/18 Estilo oscuro Tema 6]
+
+% ---------------------------------------------------------------- tipografía
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{lmodern}
+\RequirePackage[spanish,es-noshorthands,es-tabla,es-nodecimaldot]{babel}
+\RequirePackage{microtype}
+\RequirePackage{amsmath,amssymb,mathtools,bm}
+\RequirePackage[a4paper,top=2.5cm,bottom=2.6cm,left=2.6cm,right=2.6cm,
+                headheight=15pt,headsep=0.9cm]{geometry}
+
+% ---------------------------------------------------------------- colores
+\RequirePackage{xcolor}
+\definecolor{fondo}{HTML}{000000}      % página
+\definecolor{panel}{HTML}{0E1014}      % interior de entornos
+\definecolor{panelclaro}{HTML}{16191F}
+\definecolor{texto}{HTML}{ECECEC}      % texto principal
+\definecolor{gristexto}{HTML}{9CA0A8}  % pies, rótulos secundarios
+\definecolor{regla}{HTML}{2E3036}      % filetes
+\definecolor{azul}{HTML}{5AA9E6}       % acento principal
+\definecolor{azulmedio}{HTML}{447FAC}
+\definecolor{azulborde}{HTML}{2C526F}  % marcos de entornos
+\definecolor{celeste}{HTML}{83BEEC}
+\definecolor{oro}{HTML}{D6B25E}        % acento secundario
+\definecolor{naranja}{HTML}{E8894A}
+\definecolor{rojo}{HTML}{E5534B}       % carga positiva
+\definecolor{verdeagua}{HTML}{5AC8BE}
+\definecolor{conductor}{HTML}{3A3F47}
+\definecolor{conductorosc}{HTML}{1C1F24}
+\definecolor{lineacampo}{HTML}{C9D1D9}
+
+\RequirePackage{pagecolor}
+\pagecolor{fondo}
+\color{texto}
+
+% ---------------------------------------------------------------- TikZ / pgfplots
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.markings,decorations.pathmorphing,
+  patterns,patterns.meta,positioning,shadings,fadings,shapes.geometric,
+  backgrounds,intersections,angles,quotes}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween,groupplots}
+\RequirePackage{graphicx}
+
+% Estilos gráficos comunes a todas las figuras
+\tikzset{
+  >={Stealth[length=4.2pt,width=3.4pt]},
+  every picture/.style={line cap=round,line join=round},
+  % líneas de campo (con flecha a una distancia dada del origen)
+  flecha/.style={postaction={decorate},decoration={markings,
+      mark=at position #1 with {\arrow{Stealth[length=3.6pt,width=3pt]}}}},
+  flinea/.style={draw=lineacampo,line width=0.5pt},
+  prohibida/.style={draw=rojo!80,densely dashed,line width=0.45pt,opacity=0.85},
+  virtual/.style={draw=gristexto!70,dash pattern=on 1.6pt off 1.6pt,line width=0.4pt},
+  equipot/.style={draw=oro,line width=0.45pt,opacity=0.85},
+  equisup/.style={draw=texto,line width=0.3pt,opacity=0.45},
+  % cargas
+  cargapos/.style={circle,inner sep=0pt,minimum size=7.5pt,
+      ball color=rojo,draw=rojo!40!black,line width=0.3pt,
+      path picture={\draw[white,line width=0.7pt]
+         ([xshift=-2pt]path picture bounding box.center)--([xshift=2pt]path picture bounding box.center)
+         ([yshift=-2pt]path picture bounding box.center)--([yshift=2pt]path picture bounding box.center);}},
+  carganeg/.style={circle,inner sep=0pt,minimum size=7.5pt,
+      ball color=azul,draw=azul!40!black,line width=0.3pt,
+      path picture={\draw[white,line width=0.7pt]
+         ([xshift=-2pt]path picture bounding box.center)--([xshift=2pt]path picture bounding box.center);}},
+  cargaimg/.style={circle,inner sep=0pt,minimum size=7pt,fill=panel,
+      draw=azul,line width=0.7pt,dash pattern=on 1.2pt off 0.9pt},
+  punto/.style={circle,fill=texto,inner sep=0pt,minimum size=2.6pt},
+  puntoazul/.style={circle,fill=azul,inner sep=0pt,minimum size=3pt},
+  menos/.style={inner sep=0pt,minimum width=3.4pt,minimum height=0.8pt,fill=azul},
+  mas/.style={inner sep=0pt,minimum size=4.4pt,path picture={\draw[rojo,line width=0.75pt]
+      ([xshift=-1.9pt]path picture bounding box.center)--([xshift=1.9pt]path picture bounding box.center)
+      ([yshift=-1.9pt]path picture bounding box.center)--([yshift=1.9pt]path picture bounding box.center);}},
+  rotulo/.style={text=texto,font=\small},
+  rotulogris/.style={text=gristexto,font=\footnotesize},
+  cota/.style={draw=gristexto,line width=0.35pt,{Bar[width=4pt]}-{Bar[width=4pt]}},
+  cotaflecha/.style={draw=gristexto,line width=0.35pt,<->},
+  eje/.style={draw=gristexto,line width=0.4pt,-{Stealth[length=4pt,width=3pt]}},
+  vector/.style={draw=azul,line width=0.75pt,-{Stealth[length=5pt,width=4pt]}},
+  vectororo/.style={draw=oro,line width=0.75pt,-{Stealth[length=5pt,width=4pt]}},
+  vectorgris/.style={draw=texto,line width=0.6pt,-{Stealth[length=4.5pt,width=3.6pt]}},
+  conductorplano/.style={top color=conductor,bottom color=fondo,draw=none},
+}
+
+% Símbolo de tierra: \tierra{(x,y)}
+\newcommand{\tierra}[1]{%
+  \begin{scope}[shift={#1},draw=gristexto,line width=0.6pt]
+    \draw (-0.26,0)--(0.26,0); \draw (-0.17,-0.08)--(0.17,-0.08);
+    \draw (-0.08,-0.16)--(0.08,-0.16);
+  \end{scope}}
+
+% Mapa de colores de la casa para pgfplots
+\pgfplotsset{
+  colormap={tema}{rgb255=(14,16,20) rgb255=(19,40,58) rgb255=(31,75,110)
+     rgb255=(60,131,189) rgb255=(90,169,230) rgb255=(169,201,176)
+     rgb255=(214,178,94) rgb255=(242,227,179)},
+  oscuro/.style={
+    axis line style={gristexto,line width=0.4pt},
+    every tick/.style={gristexto,line width=0.3pt},
+    tick label style={text=gristexto,font=\scriptsize},
+    label style={text=texto,font=\small},
+    title style={text=gristexto,font=\small},
+    grid style={regla,line width=0.3pt},
+    major grid style={regla},
+    legend style={fill=panel,draw=azulborde,nodes={text=texto},font=\scriptsize,
+                  rounded corners=1.5pt,inner sep=2pt},
+    legend cell align=left,
+    axis background/.style={fill=panel},
+    tick align=outside, tick pos=left,
+    every axis plot/.append style={line width=0.9pt},
+    scaled ticks=false,
+  },
+}
+
+% ---------------------------------------------------------------- títulos y cabeceras
+\RequirePackage[nobottomtitles*]{titlesec}
+\renewcommand{\bottomtitlespace}{0.14\textheight}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{texto}}
+  {\color{azul}\thesection}{0.8em}{}[{\color{regla}\titlerule[0.6pt]}]
+\titlespacing*{\section}{0pt}{2.2ex plus 0.6ex minus 0.3ex}{1.6ex}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{texto}}{\color{azul}\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{2.0ex plus 0.5ex minus 0.3ex}{1.0ex}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{celeste}}{\thesubsubsection}{0.7em}{}
+
+\RequirePackage{fancyhdr}
+\newcommand{\cabeceraTema}{Tema 6 \textperiodcentered{} Teoría del potencial}
+\newcommand{\cabeceraAsig}{Electromagnetismo I}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\color{gristexto}\thepage}
+\fancyhead[RE]{\color{gristexto}\textsc{\cabeceraAsig}}
+\fancyhead[LO]{\color{gristexto}\textsc{\cabeceraTema}}
+\fancyhead[RO]{\color{gristexto}\thepage}
+\renewcommand{\headrule}{\color{regla}\hrule height 0.5pt\vspace{-0.5pt}}
+\fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrule}{}}
+
+% ---------------------------------------------------------------- listas, pies, enlaces
+\RequirePackage{enumitem}
+\setlist{itemsep=2pt,topsep=4pt,parsep=0pt}
+\setlist[itemize,1]{label={\color{azul}\scriptsize$\blacktriangleright$}}
+\setlist[enumerate,1]{label={\color{azul}(\roman*)},leftmargin=2.2em}
+\RequirePackage[font=small,labelfont={color=azul,sc},textfont={color=gristexto},
+  labelsep=period,justification=justified,margin=1.2cm]{caption}
+\RequirePackage{subcaption}
+\RequirePackage{booktabs}
+\RequirePackage{array}
+\RequirePackage[hidelinks,bookmarksnumbered]{hyperref}
+\hypersetup{colorlinks=true,linkcolor=azul,citecolor=azul,urlcolor=azul}
+\RequirePackage[spanish,noabbrev]{cleveref}
+\crefname{equation}{}{}
+
+% Índice
+\RequirePackage{tocloft}
+\renewcommand{\cftsecfont}{\bfseries\color{texto}}
+\renewcommand{\cftsecpagefont}{\bfseries\color{texto}}
+\renewcommand{\cftsubsecfont}{\color{gristexto}}
+\renewcommand{\cftsubsecpagefont}{\color{gristexto}}
+\renewcommand{\cftsecleader}{\color{regla}\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\color{regla}\cftdotfill{\cftdotsep}}
+\renewcommand{\cfttoctitlefont}{\Large\bfseries\color{texto}}
+\setlength{\cftbeforesecskip}{4pt}
+
+% ---------------------------------------------------------------- entornos (tcolorbox)
+\RequirePackage[most]{tcolorbox}
+\numberwithin{equation}{section}
+\newcounter{entorno}[section]
+\renewcommand{\theentorno}{\thesection.\arabic{entorno}}
+
+% Caja con pestaña: \begin{definicion}[Título] ... \end{definicion}
+\tcbset{
+  pestana/.style={enhanced,breakable,
+    colback=panel,colframe=azulborde,boxrule=0.5pt,arc=2pt,
+    left=8pt,right=8pt,top=10pt,bottom=6pt,
+    before skip=12pt,after skip=10pt,
+    fontupper=\color{texto},
+    attach boxed title to top left={xshift=6pt,yshift*=-\tcboxedtitleheight/2},
+    boxed title style={colback=fondo,colframe=azulmedio,boxrule=0.5pt,arc=1.5pt,
+      left=4pt,right=4pt,top=1pt,bottom=1pt},
+    coltitle=azul,fonttitle=\normalfont},
+}
+\newcommand{\nuevoentorno}[3]{% #1 nombre, #2 rótulo, #3 fuente del cuerpo
+  \newenvironment{#1}[1][]{%
+    \refstepcounter{entorno}%
+    \def\tcbtituloaux{##1}%
+    \begin{tcolorbox}[pestana,fontupper=\color{texto}#3,
+      title={\textsc{#2 \theentorno}\ifx\tcbtituloaux\empty\else\ {\color{texto}\itshape(##1)}\fi}]%
+  }{\end{tcolorbox}}}
+\nuevoentorno{definicion}{Definición}{}
+\nuevoentorno{teorema}{Teorema}{\itshape}
+\nuevoentorno{proposicion}{Proposición}{\itshape}
+\nuevoentorno{lema}{Lema}{\itshape}
+\nuevoentorno{corolario}{Corolario}{\itshape}
+\nuevoentorno{problema}{Problema}{}
+\nuevoentorno{ley}{Ley}{\itshape}
+
+% Entornos «en línea» (sin caja), numerados con el mismo contador
+\newenvironment{observacion}[1][]{\par\smallskip\refstepcounter{entorno}%
+  \noindent{\color{azul}\bfseries\itshape Observación \theentorno}%
+  \if\relax\detokenize{#1}\relax.\else\ {\color{gristexto}(#1)}.\fi\ }{\par\smallskip}
+\newenvironment{ejemplo}[1][]{\par\smallskip\refstepcounter{entorno}%
+  \noindent{\color{azul}\bfseries Ejemplo \theentorno}%
+  \if\relax\detokenize{#1}\relax.\else\ {\color{gristexto}(#1)}.\fi\ }{\par\smallskip}
+\newenvironment{demostracion}[1][]{\par\smallskip\noindent
+  {\bfseries\itshape Demostración\if\relax\detokenize{#1}\relax\else\ #1\fi.}\ }%
+  {\hfill{\color{gristexto}$\blacksquare$}\par\medskip}
+\newenvironment{resolucion}{\par\smallskip\noindent
+  {\color{azul}\bfseries\itshape Resolución.}\ }{\hfill{\color{gristexto}$\blacksquare$}\par\medskip}
+
+% Bloques destacados con barra lateral: \begin{nota}{Motivación} ... \end{nota}
+\newtcolorbox{nota}[1]{enhanced,breakable,colback=panel,frame hidden,
+  borderline west={1.6pt}{0pt}{azul},arc=0pt,left=9pt,right=9pt,top=5pt,bottom=5pt,
+  before skip=10pt,after skip=10pt,fontupper=\color{texto},
+  before upper={{\color{azul}\textsc{#1}.}\ }}
+\newtcolorbox{notaoro}[1]{enhanced,breakable,colback=panel,frame hidden,
+  borderline west={1.6pt}{0pt}{oro},arc=0pt,left=9pt,right=9pt,top=5pt,bottom=5pt,
+  before skip=10pt,after skip=10pt,fontupper=\color{texto},
+  before upper={{\color{oro}\textsc{#1}.}\ }}
+
+% Ecuaciones enmarcadas
+\newcommand{\caja}[1]{\tcboxmath[enhanced,colback=panelclaro,colframe=azulmedio,
+  colupper=texto,boxrule=0.5pt,arc=1.5pt,left=5pt,right=5pt,top=3pt,bottom=3pt]{#1}}
+
+% ---------------------------------------------------------------- notación
+% Vectores en negrita cursiva (convención de los apuntes de Mecánica)
+\newcommand{\vect}[1]{\bm{#1}}
+\newcommand{\uvec}[1]{\hat{\bm{#1}}}
+\newcommand{\vr}{\bm{r}}
+\newcommand{\vrp}{\bm{r}'}
+\newcommand{\vR}{\bm{R}}
+\newcommand{\uR}{\hat{\bm{u}}_{R}}
+\newcommand{\un}{\hat{\bm{n}}}
+\newcommand{\vE}{\bm{E}}
+\newcommand{\vD}{\bm{D}}
+\newcommand{\vF}{\bm{F}}
+\newcommand{\vA}{\bm{A}}
+\newcommand{\nablav}{\bm{\nabla}}
+\newcommand{\grad}{\bm{\nabla}}
+\newcommand{\gradp}{\bm{\nabla}'}
+\newcommand{\divg}{\bm{\nabla}\!\cdot}
+\newcommand{\rot}{\bm{\nabla}\!\times}
+\newcommand{\lap}{\nabla^{2}}
+\newcommand{\lapp}{\nabla'^{2}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\dV}{\,\dd V}
+\newcommand{\dVp}{\,\dd V'}
+\newcommand{\dS}{\,\dd S}
+\newcommand{\dSp}{\,\dd S'}
+\newcommand{\dSv}{\cdot\dd\bm{S}}
+\newcommand{\dSvp}{\cdot\dd\bm{S}'}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\epsz}{\varepsilon_{0}}
+\newcommand{\rhof}{\rho_{\mathrm{f}}}
+\newcommand{\cte}{\mathrm{cte}}
+\newcommand{\ind}{\mathrm{ind}}
+\newcommand{\defeq}{\mathrel{\overset{\mathrm{def}}{=}}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdn}[1]{\frac{\partial #1}{\partial n}}
+\newcommand{\pdnp}[1]{\frac{\partial #1}{\partial n'}}
+\newcommand{\abs}[1]{\left\lvert #1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\coul}{\frac{1}{4\pi\epsz}}
+\newcommand{\ointS}{\oint_{S}}
+\newcommand{\intV}{\int_{V}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Cont}{\mathcal{C}}
+\newcommand{\region}{V}
+
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.6}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+\raggedbottom
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{2pt}
+\linespread{1.04}
+\endinput

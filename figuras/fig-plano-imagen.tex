@@ -1,0 +1,57 @@
+% =====================================================================
+% Figura: método de las imágenes para el plano conductor a tierra.
+% (a) Geometría en cilíndricas (r, z): R1 = r - d u_z, R2 = r + d u_z.
+% (b) Problema equivalente: q y su imagen -q. En V (z>0) las líneas
+%     reales (continuas) y las equipotenciales (oro) son idénticas a las
+%     del problema original; las líneas virtuales (punteadas) no existen.
+% =====================================================================
+\begin{tikzpicture}
+  \def\esc{1.45}
+  % ---------------- (a) geometría
+  \begin{scope}
+    \fill[panel] (-1.9,0) rectangle (4.3,2.75*\esc);
+    \shade[top color=conductor,bottom color=fondo] (-1.9,0) rectangle (4.3,-2.4*\esc);
+    \draw[gristexto,line width=0.7pt] (-1.9,0) -- (4.3,0);
+    % eje z y coordenadas
+    \draw[eje] (0,-2.25*\esc) -- (0,2.6*\esc) node[left,rotulogris] {$z$};
+    \coordinate (q) at (0,\esc);
+    \coordinate (qi) at (0,-\esc);
+    \coordinate (P) at (3.3,2.25);
+    \draw[gristexto,densely dashed,line width=0.35pt] (P) -- (3.3,0) (P) -- (0,2.25);
+    \draw[vectorgris] (0,0) -- (P) node[pos=0.62,below right=-2pt,rotulo] {$\vr$};
+    \draw[vector] (q) -- (P) node[pos=0.5,above=1pt,rotulo,text=azul] {$\vR_1$};
+    \draw[vectororo] (qi) -- (P) node[pos=0.62,below right=-1pt,rotulo,text=oro] {$\vR_2$};
+    \node[cargapos] at (q) {};
+    \node[cargaimg] at (qi) {};
+    \node[rotulo,anchor=east] at (-0.15,\esc) {$q$};
+    \node[rotulo,anchor=east,text=azul] at (-0.15,-\esc) {$-q$};
+    \node[puntoazul,label={[rotulo]above right:$P(r,z)$}] at (P) {};
+    \node[rotulogris] at (1.65,-0.17) {$r$};
+    \node[rotulogris] at (3.5,1.15) {$z$};
+    % cotas
+    \draw[cota] (-1.15,0) -- (-1.15,\esc) node[midway,left,rotulogris] {$d$};
+    \draw[cota] (-1.15,0) -- (-1.15,-\esc) node[midway,left,rotulogris] {$d$};
+    \node[rotulogris,anchor=south east] at (4.25,-2.35*\esc) {región I: $\varphi\equiv0$};
+    \node[rotulogris,anchor=north east] at (4.25,2.7*\esc) {región II $\equiv V$};
+    \draw[azulborde,line width=0.5pt] (-1.9,-2.4*\esc) rectangle (4.3,2.75*\esc);
+    \node[rotulogris,anchor=south west] at (-1.9,2.77*\esc) {(a) Geometría y carga imagen};
+  \end{scope}
+  % ---------------- (b) problema equivalente
+  \begin{scope}[shift={(8.3,0)}]
+    \fill[panel] (-2.3*\esc,0) rectangle (2.3*\esc,2.75*\esc);
+    \fill[panelclaro!60!fondo] (-2.3*\esc,0) rectangle (2.3*\esc,-2.4*\esc);
+    \begin{scope}
+      \clip (-2.3*\esc,-2.4*\esc) rectangle (2.3*\esc,2.75*\esc);
+      \input{figuras/datos/plano-imagen.tex}
+    \end{scope}
+    \draw[azul,line width=0.6pt,dash pattern=on 4pt off 2pt] (-2.3*\esc,0) -- (2.3*\esc,0);
+    \node[cargapos] at (0,\esc) {};
+    \node[cargaimg] at (0,-\esc) {};
+    \node[rotulo,anchor=south,fill=panel,inner sep=1pt,rounded corners=1pt] at (0,\esc+0.17) {$q$};
+    \node[rotulo,anchor=north,text=azul,fill=panelclaro!60!fondo,inner sep=1pt,rounded corners=1pt] at (0,-\esc-0.17) {$-q$};
+    \node[rotulo,text=azul,fill=panel,inner sep=1.5pt,anchor=south east] at (2.25*\esc,0.04) {$\varphi=0$};
+    \node[rotulogris,anchor=south east,fill=panelclaro!60!fondo,inner sep=2pt] at (2.25*\esc,-2.35*\esc) {fuera de $V$};
+    \draw[azulborde,line width=0.5pt] (-2.3*\esc,-2.4*\esc) rectangle (2.3*\esc,2.75*\esc);
+    \node[rotulogris,anchor=south west] at (-2.3*\esc,2.77*\esc) {(b) Problema equivalente};
+  \end{scope}
+\end{tikzpicture}

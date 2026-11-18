@@ -1,0 +1,37 @@
+% =====================================================================
+% Figura: planteamiento del problema de contorno (recinto V, frontera S)
+% Fuentes conocidas en V; fuentes exteriores desconocidas; vectores r, r', R.
+% =====================================================================
+\begin{tikzpicture}[scale=0.95]
+  \fill[panel] (-1.6,-2.05) rectangle (8.1,3.95);
+  % recinto V con frontera S (curva suave que pasa por los puntos dados)
+  \path[fill=panelclaro,draw=azul,line width=0.8pt]
+    plot[smooth cycle,tension=0.75] coordinates
+    {(0,0) (2.2,-0.5) (4.6,0.2) (5.2,2.0) (3.8,3.3) (1.4,3.0) (-0.3,1.8)};
+  % distribuciones de carga conocidas dentro de V
+  \shade[ball color=oro!80!black,opacity=0.85] (1.2,1.25) ellipse (0.46 and 0.32);
+  \shade[ball color=oro!80!black,opacity=0.85] (3.95,0.8) ellipse (0.3 and 0.22);
+  \node[rotulo,text=oro,anchor=south east] at (0.85,1.5) {$\rho(\vrp)$};
+  % fuentes exteriores (desconocidas)
+  \shade[ball color=gristexto!60!black] (7.1,3.1) ellipse (0.36 and 0.26);
+  \shade[ball color=gristexto!60!black] (6.7,-0.5) ellipse (0.26 and 0.2);
+  \shade[ball color=gristexto!60!black] (-0.9,3.3) ellipse (0.3 and 0.22);
+  \node[rotulogris,anchor=north] at (6.7,-0.8) {fuentes exteriores};
+  % origen y vectores de posición
+  \coordinate (O) at (-0.9,-1.55);
+  \coordinate (rp) at (1.2,1.25);
+  \coordinate (r) at (3.9,2.15);
+  \node[punto,label={[rotulogris]left:$O$}] at (O) {};
+  \draw[vectorgris] (O) -- (rp) node[pos=0.5,left=1pt,rotulo] {$\vrp$};
+  \draw[vectorgris] (O) -- (r) node[pos=0.42,below right=-1pt,rotulo] {$\vr$};
+  \draw[vector] (rp) -- (r) node[pos=0.45,above=1pt,rotulo,text=azul] {$\vR=\vr-\vrp$};
+  \node[punto] at (rp) {};
+  \node[puntoazul,label={[rotulo]right:$P$}] at (r) {};
+  % normales exteriores
+  \draw[vectororo] (5.2,2.0) -- ++(0.968*0.75,0.25*0.75) node[right,rotulo,text=oro] {$\un$};
+  \draw[vectororo] (1.4,3.0) -- ++(-0.34*0.75,0.94*0.75) node[left,rotulo,text=oro] {$\un$};
+  % rótulos del recinto
+  \node[rotulo,text=azul] at (2.6,2.75) {$V$};
+  \node[rotulo,text=azul,anchor=west] at (4.75,0.05) {$S=\partial V$};
+  \draw[azulborde,line width=0.5pt] (-1.6,-2.05) rectangle (8.1,3.95);
+\end{tikzpicture}

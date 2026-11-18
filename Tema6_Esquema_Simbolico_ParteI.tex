@@ -1,0 +1,330 @@
+%% =====================================================================
+%%  Electromagnetismo I · Tema 6 · Teoría del potencial (Parte I)
+%%  ESQUEMA SIMBÓLICO: desarrollos encadenados con comentario mínimo,
+%%  pensado como guion para los apuntes manuscritos.
+%%  Compilar con:  pdflatex (dos pasadas)  ·  latexmk -pdf
+%% =====================================================================
+\documentclass[11pt,a4paper,twoside]{article}
+\usepackage{estilo/tema6-estilo}
+\renewcommand{\cabeceraTema}{Tema 6 \textperiodcentered{} Esquema simbólico}
+
+\hypersetup{pdftitle={Tema 6. Teoría del potencial (Parte I). Esquema simbólico},
+            pdfauthor={Daniel Martín Guerrero},
+            pdfsubject={Electromagnetismo I}}
+
+% Paso numerado de un desarrollo: \paso{título}
+\newcounter{paso}[section]
+\newcommand{\paso}[1]{\par\smallskip\refstepcounter{paso}\noindent
+  {\color{azul}\bfseries\thepaso.\ }{\color{celeste}\itshape #1}\par\nopagebreak\smallskip}
+% Comentario breve al margen de una cadena de igualdades
+\newcommand{\com}[1]{\quad{\color{gristexto}\footnotesize\text{#1}}}
+
+\begin{document}
+
+%% ------------------------------------------------------------- CABECERA
+\thispagestyle{plain}
+\begin{center}
+  \includegraphics[width=3.4cm]{estilo/logo-usal.png}\par\vspace{0.3cm}
+  {\color{gristexto}\rule{\textwidth}{0.4pt}}\par\vspace{0.2cm}
+  {\color{azul}\textsc{Electromagnetismo I}}\quad{\color{gristexto}\textperiodcentered\quad\textsc{Tema 6 \textperiodcentered{} Parte I}}\par
+  \vspace{0.25cm}
+  {\fontsize{22}{26}\selectfont\bfseries Teoría del potencial}\par\vspace{0.1cm}
+  {\color{gristexto}\itshape Esquema simbólico: desarrollos completos con comentario mínimo}\par
+  \vspace{0.2cm}{\color{gristexto}\rule{\textwidth}{0.4pt}}
+\end{center}
+
+\begin{nota}{Notación}
+$\vR=\vr-\vrp$, $R=\abs{\vR}$, $\uR=\vR/R$; primas: derivadas respecto de $\vrp$;
+$\dd\bm S=\un\dS$ ($\un$ exterior), $\partial_n=\un\cdot\nablav$; medio lineal isótropo
+$\eps(\vr)>0$; $\rho\equiv\rhof$.
+\end{nota}
+
+\setcounter{tocdepth}{1}
+{\small\tableofcontents}
+
+%% =====================================================================
+\section{Poisson y Laplace}
+%% =====================================================================
+
+\paso{Ecuación de Poisson generalizada}
+\begin{equation}
+  \rot\vE=\bm0\ \xRightarrow{\text{Stokes}}\ \vE=-\nablav\varphi,\qquad
+  \nablav\cdot\vD=\rho,\quad\vD=\eps\vE
+  \ \Longrightarrow\ \caja{\nablav\cdot(\eps\nablav\varphi)=-\rho}
+\end{equation}
+\begin{equation}
+  \nablav\cdot(\eps\nablav\varphi)=\nablav\eps\cdot\nablav\varphi+\eps\lap\varphi=-\rho
+  \ \Longrightarrow\
+  \lap\varphi=-\frac1\eps\bigl(\rho+\nablav\eps\cdot\nablav\varphi\bigr)
+\end{equation}
+
+\paso{Medio homogéneo}
+\begin{equation}
+  \nablav\eps=\bm0:\qquad \lap\varphi=-\frac{\rho}{\eps}
+  \quad\bigl(\text{vacío: }-\rho/\epsz\bigr),\qquad
+  \rho=0:\ \caja{\lap\varphi=0}
+\end{equation}
+
+\paso{La función $1/R$}
+\begin{gather}
+  \nablav\frac1R=-\frac{\uR}{R^{2}},\qquad\gradp\frac1R=+\frac{\uR}{R^{2}},\qquad
+  \nablav\cdot\frac{\vR}{R^{3}}=\frac{3}{R^{3}}-\frac{3R^{2}}{R^{5}}=0\ \ (R\neq0)\\
+  \int_{B_\epsilon}\lap\frac1R\dV=\oint_{\partial B_\epsilon}\Bigl(-\frac{\uR}{R^{2}}\Bigr)\cdot\uR R^{2}\dd\Omega=-4\pi
+  \ \Longrightarrow\ \caja{\lap\frac1R=\lapp\frac1R=-4\pi\delta^{3}(\vr-\vrp)}
+\end{gather}
+
+\paso{Todas las fuentes conocidas}
+\begin{equation}
+  \varphi(\vr)=\frac{1}{4\pi\epsz}\int\frac{\rho(\vrp)}{\abs{\vr-\vrp}}\dVp
+  \ \Rightarrow\
+  \lap\varphi=\frac{1}{4\pi\epsz}\int\rho(\vrp)\bigl[-4\pi\delta^{3}(\vr-\vrp)\bigr]\dVp=-\frac{\rho(\vr)}{\epsz}
+\end{equation}
+
+\paso{Laplace en 1D}
+\begin{equation}
+  \varphi''=0\Rightarrow\varphi=Ax+B,\qquad
+  \tfrac12\bigl[\varphi(x+a)+\varphi(x-a)\bigr]=\varphi(x)
+  \com{(valor medio $\Rightarrow$ sin extremos interiores)}
+\end{equation}
+
+%% =====================================================================
+\section{Identidades de Green y representación integral}
+%% =====================================================================
+
+\paso{Primera identidad}
+\begin{equation}
+  \vA=\varphi\nablav\psi,\quad\nablav\cdot\vA=\varphi\lap\psi+\nablav\varphi\cdot\nablav\psi
+  \ \xRightarrow{\text{Gauss}}\
+  \caja{\int_V\bigl(\varphi\lap\psi+\nablav\varphi\cdot\nablav\psi\bigr)\dV=\oint_S\varphi\,\pdn\psi\dS}
+\end{equation}
+
+\paso{Segunda identidad}
+\begin{equation}
+  (\varphi\leftrightarrow\psi)\ \text{y restar:}\qquad
+  \caja{\int_V\bigl(\varphi\lap\psi-\psi\lap\varphi\bigr)\dV
+  =\oint_S\Bigl(\varphi\pdn\psi-\psi\pdn\varphi\Bigr)\dS}
+\end{equation}
+
+\paso{Elección para la representación}
+\begin{equation}
+  \varphi\equiv\varphi(\vrp),\qquad\psi\equiv\frac1R,\qquad \vr\in V\ \text{fijo}
+\end{equation}
+\begin{equation}
+  \int_V\Bigl[\varphi\,\lapp\frac1R-\frac1R\lapp\varphi\Bigr]\dVp
+  =\oint_S\varphi\,\gradp\frac1R\dSvp-\oint_S\frac1R\gradp\varphi\dSvp
+\end{equation}
+
+\paso{Sustituciones}
+\begin{align}
+  \int_V\varphi(\vrp)\,\lapp\tfrac1R\dVp&=-4\pi\varphi(\vr)\\
+  -\tfrac1R\lapp\varphi&=+\frac{\rho+\gradp\eps\cdot\gradp\varphi}{\eps R}\\
+  \gradp\tfrac1R\dSvp&=\frac{\uR\cdot\un}{R^{2}}\dSp,\qquad
+  \gradp\varphi\dSvp=\pdnp\varphi\dSp
+\end{align}
+\begin{equation}
+  -4\pi\varphi(\vr)+\int_V\frac{\rho+\gradp\eps\cdot\gradp\varphi}{\eps R}\dVp
+  =\oint_S\varphi\frac{\uR\cdot\un}{R^{2}}\dSp-\oint_S\frac1R\pdnp\varphi\dSp
+\end{equation}
+
+\paso{Representación integral}
+\begin{equation}
+  \caja{\varphi(\vr)=\frac1{4\pi}\int_V\frac{\rho+\gradp\eps\cdot\gradp\varphi}{\eps R}\dVp
+  +\frac1{4\pi}\oint_S\Bigl[\frac1R\pdnp\varphi-\varphi\frac{\uR\cdot\un}{R^{2}}\Bigr]\dSp}
+  \com{($\vr\notin\overline V\Rightarrow$ 1.\textsuperscript{er} miembro $=0$)}
+\end{equation}
+\begin{equation}
+  \eps=\cte:\quad
+  \varphi(\vr)=\frac1{4\pi\eps}\int_V\frac{\rho}{R}\dVp
+  +\frac1{4\pi}\oint_S\Bigl(\frac1R\pdnp\varphi-\varphi\frac{\uR\cdot\un}{R^{2}}\Bigr)\dSp
+\end{equation}
+
+\paso{Lecturas físicas}
+\begin{gather}
+  \frac{\rho+\nablav\eps\cdot\nablav\varphi}{\eps}=\frac{\rho+\rho_b}{\epsz}
+  \com{(carga libre + ligada)}\\
+  \sigma_{\mathrm{eq}}=\eps\pdnp\varphi,\qquad \bm\tau_{\mathrm{eq}}=-\eps\varphi\,\un
+  \com{(estrato de Green: capa simple + doble = fuentes exteriores)}\\
+  S\to\infty,\ \varphi=\mathcal O(r^{-1})\ \Rightarrow\ \oint_S\sim r_S^{-3}r_S^{2}\to0
+  \ \Rightarrow\ \varphi=\frac1{4\pi\eps}\int\frac{\rho}{R}\dVp
+\end{gather}
+
+\paso{Exceso de datos (Cauchy)}
+\begin{equation}
+  \varphi=Ax+B:\quad\varphi(0)=0,\ \varphi(1)=1\Rightarrow\varphi=x;
+  \qquad\text{además }\varphi'(0)=2\ \Rightarrow\ \text{incompatible}
+\end{equation}
+
+%% =====================================================================
+\section{Unicidad}
+%% =====================================================================
+
+\paso{Diferencia de dos soluciones}
+\begin{equation}
+  \nablav\cdot(\eps\nablav\varphi_{1,2})=-\rho,\qquad
+  \Phi\defeq\varphi_1-\varphi_2\ \Rightarrow\ \nablav\cdot(\eps\nablav\Phi)=0
+\end{equation}
+
+\paso{Primera identidad con $\varphi\equiv\Phi$, $\psi\equiv\eps\Phi$}
+\begin{gather}
+  \int_V\bigl[\eps\Phi\lap\Phi+\nablav(\eps\Phi)\cdot\nablav\Phi\bigr]\dV=\oint_S\eps\Phi\nablav\Phi\dSv\\
+  \nablav(\eps\Phi)=\Phi\nablav\eps+\eps\nablav\Phi\ \Rightarrow\
+  \Phi\underbrace{\bigl(\eps\lap\Phi+\nablav\eps\cdot\nablav\Phi\bigr)}_{\nablav\cdot(\eps\nablav\Phi)=0}+\eps\abs{\nablav\Phi}^{2}\\
+  \caja{\int_V\eps\abs{\nablav\Phi}^{2}\dV=\oint_S\eps\,\Phi\,\pdn\Phi\dS}
+\end{gather}
+
+\paso{Casos}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}\small
+\begin{tabular}{>{\color{azul}}l l l}
+\toprule
+Condición & Dato en $S$ & Consecuencia\\
+\midrule
+Dirichlet & $\varphi|_S$ & $\Phi|_S=0\Rightarrow\nablav\Phi=\bm0\Rightarrow\Phi=\cte=0$: única\\
+Neumann & $\partial_n\varphi|_S$ & $\partial_n\Phi|_S=0\Rightarrow\varphi_1=\varphi_2+\cte$: $\vE$ único\\
+Mixtas & $\varphi|_{S_D}$, $\partial_n\varphi|_{S_N}$ & $\Phi\,\partial_n\Phi=0$ en $S\Rightarrow$ única si $S_D\neq\varnothing$\\
+Cauchy & $\varphi$ y $\partial_n\varphi$ & sobredeterminado: en general sin solución\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{equation}
+  \oint_S\eps\,\partial_n\varphi\dS=-\int_V\rho\dV\com{(compatibilidad de Neumann)}
+\end{equation}
+
+\paso{Superposición (conductores $S_k$ a $V_k$)}
+\begin{equation}
+  \lap\varphi_k=0,\ \ \varphi_k|_{S_j}=\delta_{jk}
+  \ \Longrightarrow\ \varphi=\sum_kV_k\varphi_k,\qquad \varphi|_{S_j}=V_j
+  \com{(única por Dirichlet)}
+\end{equation}
+
+\paso{Cavidad vacía en conductor}
+\begin{equation}
+  \lap\varphi=0\ \text{en }V,\ \ \varphi|_{S_a}=V_0\ \Rightarrow\ \varphi\equiv V_0
+  \ \Rightarrow\ \vE=\bm0,\ \ \sigma_a=0
+\end{equation}
+
+%% =====================================================================
+\section{Método de las imágenes}
+%% =====================================================================
+
+\paso{Fundamento}
+\begin{equation}
+  \nablav\cdot(\eps\nablav\varphi_1)=-\rho,\quad\nablav\cdot(\eps\nablav\varphi_2)=0\ \ (\vr\in V)
+  \ \Rightarrow\ \nablav\cdot(\eps\nablav(\varphi_1+\varphi_2))=-\rho
+\end{equation}
+\begin{equation}
+  \text{imágenes}\notin V,\ \ \varphi_{\mathrm{real}}+\varphi_{\mathrm{img}}\ \text{cumple las c.c.}
+  \ \xRightarrow{\text{unicidad}}\ \text{solución en }V
+\end{equation}
+
+\subsection*{Plano conductor a tierra}
+
+\begin{figure}[!htb]
+  \centering
+  \resizebox{0.92\textwidth}{!}{\input{figuras/fig-plano-imagen.tex}}
+  \caption{Plano a tierra: geometría e imagen $-q$ en $z=-d$; problema equivalente.}
+\end{figure}
+
+\paso{Potencial}
+\begin{gather}
+  \vR_1=r\uvec u_r+(z-d)\uvec u_z,\quad \vR_2=r\uvec u_r+(z+d)\uvec u_z\\
+  \caja{\varphi(r,z)=\frac{q}{4\pi\epsz}\Biggl[\frac{1}{\sqrt{r^{2}+(z-d)^{2}}}-\frac{1}{\sqrt{r^{2}+(z+d)^{2}}}\Biggr]}\\
+  \varphi(r,0)=0,\qquad \lap\varphi\big|_{z>0}=-\tfrac{q}{\epsz}\,\delta^{3}(\vr-d\uvec u_z),\qquad \varphi\xrightarrow{\ \infty\ }0
+\end{gather}
+
+\paso{Campo}
+\begin{equation}
+  \vE=\frac{q}{4\pi\epsz}\Bigl(\frac{\vR_1}{R_1^{3}}-\frac{\vR_2}{R_2^{3}}\Bigr)
+  =\frac{qr}{4\pi\epsz}\Bigl[\frac1{R_1^{3}}-\frac1{R_2^{3}}\Bigr]\uvec u_r
+  +\frac{q}{4\pi\epsz}\Bigl[\frac{z-d}{R_1^{3}}-\frac{z+d}{R_2^{3}}\Bigr]\uvec u_z
+  \com{($E_r(r,0)=0$)}
+\end{equation}
+
+\paso{Densidad y carga inducidas}
+\begin{gather}
+  \sigma_{\ind}=\epsz E_z(r,0^{+})=\frac{q}{4\pi}\Bigl[\frac{-d}{(r^{2}+d^{2})^{3/2}}-\frac{d}{(r^{2}+d^{2})^{3/2}}\Bigr]
+  =\caja{-\frac{qd}{2\pi(r^{2}+d^{2})^{3/2}}}\\
+  q_{\ind}=\int_0^{\infty}\sigma\,2\pi r\dd r=-qd\int_0^{\infty}\frac{r\dd r}{(r^{2}+d^{2})^{3/2}}
+  =-qd\Bigl[-\frac{1}{(r^{2}+d^{2})^{1/2}}\Bigr]_0^{\infty}=\caja{-q}
+\end{gather}
+
+\paso{Fuerzas}
+\begin{gather}
+  \vF_q=q\vE_{-q}(0,d)=-\frac{q^{2}}{4\pi\epsz}\frac{2d}{[(2d)^{2}]^{3/2}}\uvec u_z
+  =\caja{-\frac{q^{2}}{4\pi\epsz(2d)^{2}}\uvec u_z}\com{(no usar $\vE$ total: autofuerza)}\\
+  P=\frac{\sigma^{2}}{2\epsz}:\quad
+  F_{\mathrm{pl}}=\frac1{2\epsz}\Bigl(\frac{qd}{2\pi}\Bigr)^{2}2\pi\int_0^{\infty}\frac{r\dd r}{(r^{2}+d^{2})^{3}}
+  =\frac{q^{2}d^{2}}{4\pi\epsz}\Bigl[-\frac{1}{4(r^{2}+d^{2})^{2}}\Bigr]_0^{\infty}
+  =\frac{q^{2}}{4\pi\epsz(2d)^{2}}=-F_{q,z}
+\end{gather}
+
+\subsection*{Esfera conductora a tierra}
+
+\begin{figure}[!htb]
+  \centering
+  \resizebox{0.62\textwidth}{!}{\input{figuras/fig-esfera-geometria.tex}}
+  \caption{Esfera a tierra: $q$ en $d$, imagen $q'$ en $d'$; $P$ ($\theta=0$), $Q$ ($\theta=\pi$).}
+\end{figure}
+
+\paso{Ensayo}
+\begin{equation}
+  \varphi(r,\theta)=\frac1{4\pi\epsz}\Bigl[\frac{q}{(r^{2}+d^{2}-2rd\cos\theta)^{1/2}}+\frac{q'}{(r^{2}+d'^{2}-2rd'\cos\theta)^{1/2}}\Bigr],
+  \qquad d'<a<d
+\end{equation}
+
+\paso{Condiciones en $P$ y $Q$}
+\begin{align}
+  \varphi(a,0)=0&:\quad\frac{q}{d-a}+\frac{q'}{a-d'}=0\ \Rightarrow\ q'=-q\frac{a-d'}{d-a}\\
+  \varphi(a,\pi)=0&:\quad\frac{q}{a+d}=-\frac{q'}{a+d'}=q\frac{a-d'}{(d-a)(a+d')}\\
+  &\ \Rightarrow\ (d-a)(a+d')=(a-d')(a+d)\\
+  &\ \Rightarrow\ ad+dd'-a^{2}-ad'=a^{2}+ad-ad'-dd'\ \Rightarrow\ 2dd'=2a^{2}
+\end{align}
+\begin{equation}
+  \caja{d'=\frac{a^{2}}{d},\qquad q'=-q\frac{a-a^{2}/d}{d-a}=-q\frac{a(d-a)}{d(d-a)}=-q\frac ad}
+\end{equation}
+
+\paso{Comprobación en toda la esfera}
+\begin{equation}
+  R'\big|_{r=a}=\Bigl(a^{2}+\frac{a^{4}}{d^{2}}-\frac{2a^{3}}{d}\cos\theta\Bigr)^{1/2}=\frac ad R\big|_{r=a}
+  \ \Rightarrow\ \frac{q'}{R'}\Big|_{r=a}=-\frac{q}{R}\Big|_{r=a}\ \Rightarrow\ \varphi(a,\theta)=0\ \ \forall\theta
+\end{equation}
+\begin{equation}
+  \caja{\varphi(r,\theta)=\frac{q}{4\pi\epsz}\Biggl[\frac{1}{(r^{2}+d^{2}-2rd\cos\theta)^{1/2}}
+  -\frac{a/d}{\bigl[r^{2}+a^{4}/d^{2}-2r(a^{2}/d)\cos\theta\bigr]^{1/2}}\Biggr]}
+\end{equation}
+
+\paso{Campo}
+\begin{align}
+  E_r&=-\partial_r\varphi=\frac{q}{4\pi\epsz}\Biggl[\frac{r-d\cos\theta}{(r^{2}+d^{2}-2rd\cos\theta)^{3/2}}
+  -\frac{(r-d'\cos\theta)\,a/d}{(r^{2}+d'^{2}-2rd'\cos\theta)^{3/2}}\Biggr]\\
+  E_\theta&=-\frac1r\partial_\theta\varphi=\frac{qd\sin\theta}{4\pi\epsz}\Biggl[\frac{1}{(r^{2}+d^{2}-2rd\cos\theta)^{3/2}}
+  -\frac{(a/d)^{3}}{(r^{2}+d'^{2}-2rd'\cos\theta)^{3/2}}\Biggr]\com{($E_\theta(a,\theta)=0$)}
+\end{align}
+
+\paso{Densidad inducida: $D\defeq(a^{2}+d^{2}-2ad\cos\theta)^{1/2}$, $R'|_{r=a}=\tfrac adD$}
+\begin{gather}
+  E_r(a,\theta)=\frac{q}{4\pi\epsz}\frac{(a-d\cos\theta)-\frac da(d-a\cos\theta)}{D^{3}}
+  =\frac{q}{4\pi\epsz}\frac{a^{2}-d^{2}}{aD^{3}}\\
+  \sigma=\epsz E_r(a,\theta)\ \Rightarrow\ \caja{\sigma(\theta)=-\frac{q}{4\pi a}\frac{d^{2}-a^{2}}{(a^{2}+d^{2}-2ad\cos\theta)^{3/2}}}
+\end{gather}
+
+\paso{Carga inducida}
+\begin{gather}
+  \int_{-1}^{1}\frac{\dd u}{(a^{2}+d^{2}-2adu)^{3/2}}=\frac1{ad}\Bigl(\frac1{d-a}-\frac1{d+a}\Bigr)=\frac{2}{d(d^{2}-a^{2})}\\
+  q_{\ind}=-\frac{q(d^{2}-a^{2})}{4\pi a}\,2\pi a^{2}\,\frac{2}{d(d^{2}-a^{2})}=\caja{-q\frac ad=q'}
+\end{gather}
+
+\paso{Fuerza y límites}
+\begin{gather}
+  \vF_q=\frac{qq'}{4\pi\epsz(d-d')^{2}}\uvec u_z=\caja{-\frac{q^{2}ad}{4\pi\epsz(d^{2}-a^{2})^{2}}\uvec u_z}\\
+  d=a+h,\ h\ll a:\ \abs{\vF}\simeq\frac{q^{2}}{4\pi\epsz(2h)^{2}}\com{(plano)}\qquad
+  d\gg a:\ \abs{\vF}\simeq\frac{q^{2}a}{4\pi\epsz d^{3}}
+\end{gather}
+
+\paso{Carga interior ($d<a$)}
+\begin{equation}
+  q'=-q\frac ad\ \text{en}\ d'=\frac{a^{2}}{d}>a,\qquad q_{\ind}=-q\neq q'
+  \com{(la imagen sólo reproduce $\varphi$ en $V$)}
+\end{equation}
+
+\end{document}

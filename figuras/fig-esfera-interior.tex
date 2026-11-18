@@ -1,0 +1,30 @@
+% =====================================================================
+% Figura: problema inverso — carga q en el interior de una esfera
+% conductora a tierra (a = 1, d = 0.45). La imagen q' = -q a/d está fuera,
+% en d' = a^2/d. Todas las líneas de q mueren en la esfera (q_ind = -q).
+% =====================================================================
+\begin{tikzpicture}
+  \def\esc{1.6}
+  \def\caja{(-1.6*\esc,-1.5*\esc) rectangle (2.9*\esc,1.5*\esc)}
+  \begin{scope}
+    \clip \caja;
+    \fill[panelclaro!60!fondo] \caja;
+    \fill[fondo] (0,0) circle (\esc);
+    \input{figuras/datos/esfera-interior-virtual.tex}
+    \input{figuras/datos/esfera-interior.tex}
+  \end{scope}
+  \draw[azul,line width=0.8pt] (0,0) circle (\esc);
+  \draw[gristexto,line width=0.6pt] (-\esc,0) -- (-1.35*\esc,0) -- (-1.35*\esc,-0.5*\esc);
+  \tierra{(-1.35*\esc,-0.5*\esc)}
+  \node[cargapos] at (0.45*\esc,0) {};
+  \node[cargaimg] at ({\esc/0.45},0) {};
+  \node[rotulo,anchor=east,fill=fondo,inner sep=1pt,rounded corners=1pt] at (0.45*\esc-0.17,0) {$q$};
+  \node[rotulo,text=azul,anchor=south,fill=panelclaro!60!fondo,inner sep=1pt,rounded corners=1pt] at ({\esc/0.45},0.16) {$q'$};
+  \node[rotulo,text=azul,anchor=north west,fill=fondo,inner sep=1pt] at (-0.55*\esc,-0.62*\esc) {$V$};
+  \node[rotulogris,anchor=north east,fill=panelclaro!60!fondo,inner sep=1.5pt] at (2.85*\esc,1.45*\esc) {fuera de $V$};
+  \draw[azulborde,line width=0.5pt] \caja;
+  % cotas (bajo el recuadro, sin solaparse con las líneas)
+  \draw[cota] (0,-1.5*\esc-0.3) -- (0.45*\esc,-1.5*\esc-0.3) node[midway,below,rotulogris] {$d$};
+  \draw[cota] (0,-1.5*\esc-0.9) -- ({\esc/0.45},-1.5*\esc-0.9) node[midway,below,rotulogris] {$d'=a^{2}/d$};
+  \draw[gristexto!50,densely dotted,line width=0.3pt] (0,-1.5*\esc) -- (0,-1.5*\esc-0.9);
+\end{tikzpicture}

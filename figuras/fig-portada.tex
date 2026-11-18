@@ -1,0 +1,16 @@
+% =====================================================================
+% Figura de portada: carga puntual frente a una esfera conductora a tierra.
+% Líneas de campo exactas (método de las imágenes, a = 1, d = 2) con
+% degradado azul -> oro según el ángulo de salida; equipotenciales
+% punteadas. Datos: figuras/datos/portada.tex (generar_figuras.py).
+% =====================================================================
+\begin{tikzpicture}
+  \def\esc{1.7}
+  \begin{scope}
+    \clip (-2.25*\esc,-2.3*\esc) rectangle (5.05*\esc,2.3*\esc);
+    \input{figuras/datos/portada.tex}
+  \end{scope}
+  \shade[ball color=conductor!85!white] (0,0) circle (\esc);
+  \draw[gristexto!60,line width=0.4pt] (0,0) circle (\esc);
+  \node[cargapos,minimum size=9pt] at (2*\esc,0) {};
+\end{tikzpicture}

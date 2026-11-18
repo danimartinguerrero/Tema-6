@@ -1,0 +1,49 @@
+% =====================================================================
+% Figura: apantallamiento electrostático (cavidad en un conductor).
+% (a) Corteza conductora neutra (radios a<b) con una carga q excéntrica en
+%     la cavidad y una carga exterior q_e. Líneas de campo exactas (imágenes):
+%     dentro, q + imagen respecto de r=a; fuera, q_e + imagen respecto de
+%     r=b + carga central (q - q_1). Las marcas -/+ se colocan donde nacen o
+%     mueren las líneas: su densidad es proporcional a |sigma|.
+% (b) Cavidad vacía en un conductor a tierra: Dirichlet + Laplace => phi=0.
+% =====================================================================
+\begin{tikzpicture}
+  \def\esc{1.2}
+  % ---------------- (a)
+  \begin{scope}
+    \clip (-4.3*\esc,-2.45*\esc) rectangle (3.4*\esc,2.45*\esc);
+    \fill[panel] (-4.3*\esc,-2.45*\esc) rectangle (3.4*\esc,2.45*\esc);
+    % corteza conductora (anillo) con sombreado radial sobrio
+    \fill[even odd rule,inner color=conductor,outer color=conductorosc]
+      (0,0) circle (1.5*\esc) (0,0) circle (1.0*\esc);
+    \draw[gristexto,line width=0.5pt] (0,0) circle (1.5*\esc) (0,0) circle (1.0*\esc);
+    \fill[fondo] (0,0) circle (1.0*\esc);
+    \input{figuras/datos/cavidad-lineas.tex}
+    \input{figuras/datos/cavidad-marcas.tex}
+    \node[cargapos] at (0.38*\esc,0) {};
+    \node[cargapos] at (-3.3*\esc,0) {};
+    \node[rotulo,fill=fondo,inner sep=1pt,rounded corners=1pt,anchor=south] at (0.38*\esc,0.17) {$q$};
+    \node[rotulo,fill=panel,inner sep=1pt,rounded corners=1pt,anchor=south] at (-3.3*\esc,0.18) {$q_{\mathrm{e}}$};
+  \end{scope}
+  \draw[azulborde,line width=0.5pt] (-4.3*\esc,-2.45*\esc) rectangle (3.4*\esc,2.45*\esc);
+  \node[rotulogris,anchor=south west] at (-4.3*\esc,2.47*\esc)
+     {(a) Corteza neutra: carga en la cavidad y carga exterior};
+  % ---------------- (b)
+  \begin{scope}[shift={(6.6,0)}]
+    \fill[panel] (-1.85,-2.94) rectangle (2.35,2.94);
+    \fill[even odd rule,inner color=conductor,outer color=conductorosc]
+      (0,0) circle (1.6) (0,0) circle (0.95);
+    \draw[gristexto,line width=0.5pt] (0,0) circle (1.6) (0,0) circle (0.95);
+    \fill[fondo] (0,0) circle (0.95);
+    \draw[vectorgris,line width=0.45pt] (0,0) -- (135:0.95) node[pos=0.55,above right=-1pt,rotulo] {$a$};
+    \draw[vectorgris,line width=0.45pt] (0,0) -- (-35:1.6) node[pos=0.78,above right=-1pt,rotulo] {$b$};
+    \node[punto] at (0,0) {};
+    \node[rotulo,text=azul] at (-0.3,-0.45) {$V$};
+    % conexión a tierra
+    \draw[gristexto,line width=0.6pt] (1.6,0) -- (2.0,0) -- (2.0,-0.55);
+    \tierra{(2.0,-0.55)}
+    \node[rotulo,align=center,text=oro] at (0.15,-2.35) {$\varphi\big|_{r=a}=0\ \Rightarrow\ \sigma_a=0$};
+    \draw[azulborde,line width=0.5pt] (-1.85,-2.94) rectangle (2.35,2.94);
+    \node[rotulogris,anchor=south west] at (-1.85,2.96) {(b) Cavidad vacía};
+  \end{scope}
+\end{tikzpicture}

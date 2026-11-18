@@ -1,0 +1,46 @@
+% =====================================================================
+% Figura: carga puntual q frente a una esfera conductora a tierra
+% (a = 1, d = 2.2). (a) Problema real: las líneas que llegan a la esfera
+% marcan la carga inducida (fracción a/d del flujo de q); el resto escapa.
+% (b) Problema equivalente: imagen q' = -q a/d en d' = a^2/d; dentro de la
+% esfera las líneas son virtuales; la esfera es la equipotencial phi = 0.
+% =====================================================================
+\begin{tikzpicture}
+  \def\esc{0.98}
+  \def\caja{(-2.1*\esc,-2.35*\esc) rectangle (4.3*\esc,2.35*\esc)}
+  % ---------------- (a)
+  \begin{scope}
+    \fill[panel] \caja;
+    \begin{scope}
+      \clip \caja;
+      \input{figuras/datos/esfera-real.tex}
+    \end{scope}
+    \draw[gristexto,line width=0.6pt] (-\esc,0) -- (-1.75*\esc,0) -- (-1.75*\esc,-0.55);
+    \tierra{(-1.75*\esc,-0.55)}
+    \shade[ball color=conductor!90!white] (0,0) circle (\esc);
+    \input{figuras/datos/esfera-marcas.tex}
+    \node[cargapos] at (2.2*\esc,0) {};
+    \node[rotulo,anchor=south,fill=panel,inner sep=1pt,rounded corners=1pt] at (2.2*\esc,0.16) {$q$};
+    \draw[azulborde,line width=0.5pt] \caja;
+    \node[rotulogris,anchor=south west] at (-2.1*\esc,2.37*\esc) {(a) Problema real};
+  \end{scope}
+  % ---------------- (b)
+  \begin{scope}[shift={(6.95,0)}]
+    \fill[panel] \caja;
+    \begin{scope}
+      \clip \caja;
+      \fill[panelclaro!60!fondo] (0,0) circle (\esc);
+      \input{figuras/datos/esfera-equipot.tex}
+      \input{figuras/datos/esfera-real.tex}
+      \input{figuras/datos/esfera-virtual.tex}
+    \end{scope}
+    \draw[azul,line width=0.6pt,dash pattern=on 4pt off 2pt] (0,0) circle (\esc);
+    \node[cargapos] at (2.2*\esc,0) {};
+    \node[cargaimg] at ({\esc/2.2},0) {};
+    \node[rotulo,anchor=south,fill=panel,inner sep=1pt,rounded corners=1pt] at (2.2*\esc,0.16) {$q$};
+    \node[rotulo,text=azul,anchor=north,fill=panelclaro!60!fondo,inner sep=1pt,rounded corners=1pt] at ({\esc/2.2},-0.15) {$q'$};
+    \node[rotulo,text=azul,fill=panel,inner sep=1.5pt] at (-1.35*\esc,-1.5*\esc) {$\varphi=0$};
+    \draw[azulborde,line width=0.5pt] \caja;
+    \node[rotulogris,anchor=south west] at (-2.1*\esc,2.37*\esc) {(b) Equivalente: $q$ y su imagen $q'$};
+  \end{scope}
+\end{tikzpicture}

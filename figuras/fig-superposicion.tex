@@ -1,0 +1,49 @@
+% =====================================================================
+% Figura: principio de superposición para el problema de Dirichlet.
+% Ecuación de Laplace 2D resuelta por diferencias finitas (ver
+% generar_figuras.py). En cada panel un conductor está a potencial 1
+% (relleno dorado) y los demás, junto con el marco lejano, a potencial 0.
+% Mapa de color: datos PNG sin texto; equipotenciales vectoriales.
+% =====================================================================
+\definecolor{cm0}{HTML}{0E1014}\definecolor{cm1}{HTML}{13283A}
+\definecolor{cm2}{HTML}{1F4B6E}\definecolor{cm3}{HTML}{3C83BD}
+\definecolor{cm4}{HTML}{5AA9E6}\definecolor{cm5}{HTML}{A9C9B0}
+\definecolor{cm6}{HTML}{D6B25E}\definecolor{cm7}{HTML}{F2E3B3}
+\pgfdeclarehorizontalshading{mapatema}{100bp}{color(0bp)=(cm0);
+  color(25bp)=(cm0); color(32.1bp)=(cm1); color(39.3bp)=(cm2); color(46.4bp)=(cm3);
+  color(53.6bp)=(cm4); color(60.7bp)=(cm5); color(67.9bp)=(cm6); color(75bp)=(cm7);
+  color(100bp)=(cm7)}
+\tikzset{activo/.style={fill=oro,draw=white,line width=0.8pt},
+         inactivo/.style={fill=conductorosc,draw=gristexto,line width=0.5pt}}
+\newcommand{\conductoresSup}[1]{% #1 = índice del conductor activo (1..4)
+  \tikzset{c1/.style=inactivo,c2/.style=inactivo,c3/.style=inactivo,
+           c4/.style=inactivo,c#1/.style=activo}%
+  \filldraw[c1] (0.32,0.62)--(0.82,0.18)--(1.85,1.42)--cycle;
+  \filldraw[c2] (0.85,2.0) rectangle (1.85,2.72);
+  \filldraw[c3] (2.35,2.18) rectangle (3.55,2.34);
+  \filldraw[c4] (2.18,1.62) circle (0.24);}
+\newcommand{\panelSup}[2]{% #1 índice, #2 rótulo
+  \begin{scope}[x=1.5cm,y=1.5cm]
+    \node[anchor=south west,inner sep=0pt] at (0,0)
+      {\includegraphics[width=6cm,height=4.5cm]{figuras/superposicion-#1.png}};
+    \begin{scope}
+      \clip (0,0) rectangle (4,3);
+      \input{figuras/datos/superposicion-#1.tex}
+    \end{scope}
+    \conductoresSup{#1}
+    \draw[azulborde,line width=0.5pt] (0,0) rectangle (4,3);
+    \node[rotulogris,anchor=south west] at (0,3.03) {#2};
+  \end{scope}}
+\begin{tikzpicture}
+  \begin{scope}[shift={(0,5.25)}]\panelSup{1}{(a) $\varphi_1$: cuña a $V=1$}\end{scope}
+  \begin{scope}[shift={(6.5,5.25)}]\panelSup{2}{(b) $\varphi_2$: placa a $V=1$}\end{scope}
+  \begin{scope}[shift={(0,0)}]\panelSup{3}{(c) $\varphi_3$: barra a $V=1$}\end{scope}
+  \begin{scope}[shift={(6.5,0)}]\panelSup{4}{(d) $\varphi_4$: disco a $V=1$}\end{scope}
+  % barra de color (escala no lineal: posición = sqrt(phi), como el mapa)
+  \shade[shading=mapatema] (3.0,-0.8) rectangle (9.5,-0.62);
+  \draw[azulborde,line width=0.4pt] (3.0,-0.8) rectangle (9.5,-0.62);
+  \foreach \v/\t in {0/0,0.5/0.25,0.7071/0.5,1/1}
+    {\draw[gristexto,line width=0.3pt] ({3+6.5*\v},-0.8)--({3+6.5*\v},-0.88)
+       node[below,rotulogris,inner sep=1pt] {$\t$};}
+  \node[rotulogris,anchor=east] at (2.9,-0.71) {$\varphi_k$};
+\end{tikzpicture}

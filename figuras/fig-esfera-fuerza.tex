@@ -1,0 +1,21 @@
+% =====================================================================
+% Figura: módulo de la fuerza atractiva sobre q frente a la esfera a tierra,
+%   |F| 4 pi eps0 a^2 / q^2 = x / (x^2 - 1)^2,   x = d/a,
+% comparada con sus dos límites:
+%   x -> 1 (plano a distancia h = d - a):  1 / [4 (x - 1)^2]
+%   x >> 1 (dipolo inducido):              1 / x^3
+% =====================================================================
+\begin{tikzpicture}
+  \begin{semilogyaxis}[oscuro,width=10.5cm,height=5.6cm,
+      xmin=1,xmax=5,ymin=4e-3,ymax=200,
+      xlabel={$x=d/a$},ylabel={$|\vF|\;4\pi\epsz a^{2}/q^{2}$},
+      grid=major,legend pos=north east,
+      log basis y=10]
+    \addplot[azul,domain=1.03:5,samples=200] {x/(x^2-1)^2};
+    \addlegendentry{esfera: $x/(x^{2}-1)^{2}$}
+    \addplot[oro,densely dashed,domain=1.03:2.2,samples=120] {1/(4*(x-1)^2)};
+    \addlegendentry{plano: $1/[4(x-1)^{2}]$}
+    \addplot[verdeagua,dash dot,domain=1.8:5,samples=100] {1/x^3};
+    \addlegendentry{$x\gg1$: $1/x^{3}$}
+  \end{semilogyaxis}
+\end{tikzpicture}

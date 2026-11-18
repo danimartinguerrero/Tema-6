@@ -1,0 +1,48 @@
+% =====================================================================
+% Figura: carga puntual frente a un plano conductor a tierra.
+% (a) Hipótesis errónea: líneas radiales de q aislada; atravesarían el
+%     conductor (tramos rojos) y no llegan perpendiculares a él.
+% (b) Solución real: las líneas mueren perpendicularmente sobre el plano;
+%     cada marca azul es el pie de una línea (densidad ~ |sigma_ind|).
+% Líneas con igual flujo por línea (cos alpha equiespaciado), d = 1.
+% =====================================================================
+\begin{tikzpicture}
+  \def\esc{1.45}
+  \newcommand{\planoConductor}{%
+    \shade[top color=conductor,bottom color=fondo] (-2.3*\esc,0) rectangle (2.3*\esc,-1.0*\esc);
+    \draw[gristexto,line width=0.7pt] (-2.3*\esc,0) -- (2.3*\esc,0);}
+  % ---------------- (a)
+  \begin{scope}
+    \fill[panel] (-2.3*\esc,0) rectangle (2.3*\esc,2.75*\esc);
+    \planoConductor
+    \begin{scope}
+      \clip (-2.3*\esc,-1.0*\esc) rectangle (2.3*\esc,2.75*\esc);
+      \input{figuras/datos/plano-ingenuo.tex}
+    \end{scope}
+    \node[cargapos] at (0,\esc) {};
+    \node[rotulo,anchor=south,fill=panel,inner sep=1pt,rounded corners=1pt] at (0,1.0*\esc+0.17) {$q$};
+    \node[rotulogris,anchor=south east,fill=conductorosc,inner sep=2pt,rounded corners=1pt]
+       at (2.25*\esc,-0.95*\esc) {¡atraviesa el conductor!};
+    \draw[azulborde,line width=0.5pt] (-2.3*\esc,-1.0*\esc) rectangle (2.3*\esc,2.75*\esc);
+    \node[rotulogris,anchor=south west] at (-2.3*\esc,2.77*\esc)
+      {(a) Campo de $q$ aislada (hipótesis errónea)};
+  \end{scope}
+  % ---------------- (b)
+  \begin{scope}[shift={(7.35,0)}]
+    \fill[panel] (-2.3*\esc,0) rectangle (2.3*\esc,2.75*\esc);
+    \planoConductor
+    \begin{scope}
+      \clip (-2.3*\esc,-1.0*\esc) rectangle (2.3*\esc,2.75*\esc);
+      \input{figuras/datos/plano-real.tex}
+    \end{scope}
+    \node[cargapos] at (0,\esc) {};
+    \node[rotulo,anchor=south,fill=panel,inner sep=1pt,rounded corners=1pt] at (0,1.0*\esc+0.17) {$q$};
+    % toma de tierra
+    \draw[gristexto,line width=0.6pt] (-2.0*\esc,-0.45*\esc) -- (-2.0*\esc,-0.75*\esc);
+    \tierra{(-2.0*\esc,-0.75*\esc)}
+    \node[rotulogris,anchor=east] at (2.25*\esc,-0.6*\esc) {$\varphi=0$};
+    \draw[azulborde,line width=0.5pt] (-2.3*\esc,-1.0*\esc) rectangle (2.3*\esc,2.75*\esc);
+    \node[rotulogris,anchor=south west] at (-2.3*\esc,2.77*\esc)
+      {(b) Solución: líneas $\perp$ al conductor};
+  \end{scope}
+\end{tikzpicture}

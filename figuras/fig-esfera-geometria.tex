@@ -1,0 +1,49 @@
+% =====================================================================
+% Figura: geometría del problema de la esfera conductora a tierra.
+% Origen en el centro O; eje z hacia la carga. P (theta = 0) y Q
+% (theta = pi) son los puntos de la esfera usados para fijar q' y d'.
+% R = |r - d u_z|, R' = |r - d' u_z|.
+% =====================================================================
+\begin{tikzpicture}
+  \def\esc{1.6}
+  \def\Ra{1.0}\def\Rd{2.3}\def\Rdp{0.4348}
+  \coordinate (O) at (0,0);
+  \coordinate (q) at (\Rd*\esc,0);
+  \coordinate (qp) at (\Rdp*\esc,0);
+  \coordinate (X) at ({2.5*\esc*cos(48)},{2.5*\esc*sin(48)});
+  \fill[panel] (-2.55,-2.15) rectangle (4.75,3.35);
+  \filldraw[fill=panelclaro,draw=azul,line width=0.8pt] (O) circle (\Ra*\esc);
+  % eje z
+  \draw[eje] (-2.25,0) -- (4.55,0) node[below left=-1pt,rotulogris] {$z$};
+  % tierra en Q
+  \draw[gristexto,line width=0.6pt] (-2.1,0) -- (-2.1,-0.5);
+  \tierra{(-2.1,-0.5)}
+  % radio
+  \draw[vectorgris,line width=0.5pt] (O) -- (140:\Ra*\esc) node[pos=0.62,above right=-1pt,rotulo] {$a$};
+  % vectores
+  \draw[vectorgris] (O) -- (X) node[pos=0.55,above left=-1pt,rotulo] {$\vr$};
+  \draw[vector] (qp) -- (X) node[pos=0.55,below right=-1pt,rotulo,text=azul] {$\vR'$};
+  \draw[vectororo] (q) -- (X) node[pos=0.5,right=1pt,rotulo,text=oro] {$\vR$};
+  % ángulo theta (radio menor que d' para no cortar R')
+  \draw[azul,line width=0.5pt] (0.38,0) arc[start angle=0,end angle=48,radius=0.38];
+  \node[rotulo,text=azul] at (31:0.6) {$\theta$};
+  % puntos y cargas
+  \node[punto] at (O) {};
+  \node[rotulo,anchor=north east] at (-0.03,-0.04) {$O$};
+  \node[punto] at (\Ra*\esc,0) {};
+  \node[rotulo,anchor=north west] at (\Ra*\esc+0.02,-0.04) {$P$};
+  \node[punto] at (-\Ra*\esc,0) {};
+  \node[rotulo,anchor=south east] at (-\Ra*\esc-0.03,0.04) {$Q$};
+  \node[cargaimg] at (qp) {};
+  \node[rotulo,text=azul,anchor=north] at (\Rdp*\esc,-0.12) {$q'$};
+  \node[cargapos] at (q) {};
+  \node[rotulo,anchor=south] at (\Rd*\esc,0.14) {$q$};
+  \node[puntoazul] at (X) {};
+  \node[rotulo,anchor=south west] at ($(X)+(0.08,0.02)$) {$(r,\theta)$};
+  % cotas
+  \draw[cota] (0,-0.95) -- (\Rdp*\esc,-0.95) node[midway,below,rotulogris] {$d'$};
+  \draw[cota] (0,-1.7) -- (\Rd*\esc,-1.7) node[midway,below,rotulogris] {$d$};
+  \draw[gristexto!50,line width=0.3pt,densely dotted]
+     (0,-0.12)--(0,-1.7) (\Rdp*\esc,-0.5)--(\Rdp*\esc,-0.95) (\Rd*\esc,-0.12)--(\Rd*\esc,-1.7);
+  \draw[azulborde,line width=0.5pt] (-2.55,-2.15) rectangle (4.75,3.35);
+\end{tikzpicture}
