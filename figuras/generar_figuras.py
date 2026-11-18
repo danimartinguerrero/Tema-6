@@ -439,24 +439,22 @@ def cavidad():
 
 
 def portada():
-    a, d = 1.0, 2.0
-    todo = [(1.0, d, 0.0), (-a / d, a**2 / d, 0.0)]
-    esc = 1.7
-    caja = (-2.25, 5.05, -2.3, 2.3)
+    """Carga q a distancia d = 1 de un plano conductor a tierra (z = 0).
+    Líneas reales (z > 0) con degradado de color según el ángulo de salida;
+    en z < 0 su reflejo especular, tenue: las líneas virtuales que mueren en
+    la carga imagen -q (por simetría del dipolo, son exactamente el espejo)."""
+    d = 1.0
+    todo = [(1.0, 0.0, d), (-1.0, 0.0, -d)]
+    esc = 1.5
+    caja = (-4.2, 4.2, 0.0, 2.55)
 
     def parar(p, pn):
-        if np.hypot(*pn) <= a:
-            lo, hi = 0.0, 1.0
-            for _ in range(40):
-                m = 0.5 * (lo + hi)
-                if np.hypot(*(p + m * (pn - p))) > a:
-                    lo = m
-                else:
-                    hi = m
-            return p + lo * (pn - p)
+        if pn[1] <= 0.0:
+            t = p[1] / (p[1] - pn[1])
+            return p + t * (pn - p)
         return None
 
-    # gradiente de color: azul -> celeste -> verde agua -> oro -> naranja
+    # azul (líneas normales al plano) -> celeste -> verde agua -> oro -> naranja
     paleta = np.array([[60, 110, 200], [90, 169, 230], [90, 200, 190],
                        [214, 178, 94], [232, 137, 74]], float)
 
@@ -466,26 +464,19 @@ def portada():
         c = paleta[i] + (x - i) * (paleta[i + 1] - paleta[i])
         return c.astype(int)
 
-    txt = ""
-    N = 26
-    als = angulos_flujo(N)
-    for j, al in enumerate(als):
-        for s in (+1, -1):
-            u = np.array([-np.cos(al), s * np.sin(al)])
-            p0 = np.array([d, 0]) + 0.05 * u
-            pts, _ = trazar(p0, todo, parar, caja=caja, lmax=30)
+    real, espejo = "", ""
+    N = 24
+    for j, al in enumerate(angulos_flujo(N)):     # al medido desde -u_z (hacia el plano)
+        for sg in (+1, -1):
+            u = np.array([sg * np.sin(al), -np.cos(al)])
+            p0 = np.array([0, d]) + 0.04 * u
+            pts, _ = trazar(p0, todo, parar, caja=caja, lmax=40)
             r, g, bb = color(j / (N - 1))
-            txt += tikz_linea(pts, f"line width=0.55pt, color={{rgb,255:red,{r};green,{g};blue,{bb}}}, opacity=0.9", esc)
-    xs = np.linspace(caja[0], caja[1], 501)
-    ys = np.linspace(caja[2], caja[3], 261)
-    X, Y = np.meshgrid(xs, ys)
-    V = potencial(X, Y, todo)
-    mask = np.hypot(X, Y) < a
-    for nivel in [0.1, 0.2, 0.35, 0.6, 1.0, 1.7, 3.0]:
-        for seg in contornos(X, Y, V, [nivel], mascara=mask)[0]:
-            if len(seg) > 3:
-                txt += tikz_linea(seg, "line width=0.35pt, color=gristexto!55!black, dash pattern=on 1.2pt off 1.2pt", esc)
-    escribir("portada.tex", txt)
+            c = f"{{rgb,255:red,{r};green,{g};blue,{bb}}}"
+            real += tikz_linea(pts, f"line width=0.55pt, color={c}", esc)
+            esp = pts * np.array([1.0, -1.0])
+            espejo += tikz_linea(esp, f"line width=0.45pt, color={c}, opacity=0.22", esc)
+    escribir("portada.tex", espejo + real)
 
 
 # ===================================================== 5. Superposición (Laplace 2D)

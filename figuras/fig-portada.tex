@@ -1,19 +1,20 @@
 % =====================================================================
-% Figura de portada (minimalista): carga puntual frente a una esfera conductora a tierra.
-% Líneas de campo exactas (método de las imágenes, a = 1, d = 2) con
-% degradado azul -> oro según el ángulo de salida; equipotenciales
-% punteadas. Datos: figuras/datos/portada.tex (generar_figuras.py).
+% Figura de portada (minimalista): carga puntual frente a un plano
+% conductor a tierra. Arriba, líneas de campo exactas (q y su imagen -q,
+% d = 1) con degradado azul -> oro según el ángulo de salida; abajo, su
+% reflejo tenue: las líneas virtuales que convergen en la carga imagen.
+% Datos: figuras/datos/portada.tex (generar_figuras.py).
 % =====================================================================
 \begin{tikzpicture}
-  \def\esc{1.7}
+  \def\esc{1.5}
   \begin{scope}
-    \clip (-2.25*\esc,-2.3*\esc) rectangle (5.05*\esc,2.3*\esc);
+    \clip (-4.2*\esc,-2.55*\esc) rectangle (4.2*\esc,2.55*\esc);
     \input{figuras/datos/portada.tex}
   \end{scope}
-  % esfera conductora: silueta plana y fina, sin volumen, para no romper
-  % la ligereza de las líneas
-  \fill[fondo] (0,0) circle (\esc);
-  \draw[gristexto!80,line width=0.5pt] (0,0) circle (\esc);
-  % carga puntual: punto plano
-  \fill[texto] (2*\esc,0) circle (1.6pt);
+  % plano conductor: un único trazo fino que se desvanece en los extremos
+  \shade[left color=fondo,right color=fondo,middle color=gristexto!90]
+    (-4.2*\esc,-0.25pt) rectangle (4.2*\esc,0.25pt);
+  % carga real (punto) e imagen (anillo tenue)
+  \fill[texto] (0,\esc) circle (1.6pt);
+  \draw[gristexto!70,line width=0.4pt] (0,-\esc) circle (1.6pt);
 \end{tikzpicture}

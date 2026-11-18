@@ -1,37 +1,55 @@
 % =====================================================================
-% Figura: planteamiento del problema de contorno (recinto V, frontera S)
-% Fuentes conocidas en V; fuentes exteriores desconocidas; vectores r, r', R.
+% Figura: planteamiento del problema de contorno (recinto V, frontera S).
+% Estilo de los apuntes de Mecánica: sin marco, superficies azules
+% translúcidas y trazos finos. Fuentes rayadas: conocidas dentro de V
+% (celeste, contorno continuo) y desconocidas fuera (gris, contorno
+% punteado). Vectores r, r', R; elemento dS' con su normal exterior.
 % =====================================================================
-\begin{tikzpicture}[scale=0.95]
-  \fill[panel] (-1.6,-2.05) rectangle (8.1,3.95);
-  % recinto V con frontera S (curva suave que pasa por los puntos dados)
-  \path[fill=panelclaro,draw=azul,line width=0.8pt]
+\begin{tikzpicture}[scale=1.0]
+  % ---------------------------------------------------- recinto V y S
+  \path[fill=azul,fill opacity=0.17,draw=azul,line width=0.75pt]
     plot[smooth cycle,tension=0.75] coordinates
     {(0,0) (2.2,-0.5) (4.6,0.2) (5.2,2.0) (3.8,3.3) (1.4,3.0) (-0.3,1.8)};
-  % distribuciones de carga conocidas dentro de V
-  \shade[ball color=oro!80!black,opacity=0.85] (1.2,1.25) ellipse (0.46 and 0.32);
-  \shade[ball color=oro!80!black,opacity=0.85] (3.95,0.8) ellipse (0.3 and 0.22);
-  \node[rotulo,text=oro,anchor=south east] at (0.85,1.5) {$\rho(\vrp)$};
-  % fuentes exteriores (desconocidas)
-  \shade[ball color=gristexto!60!black] (7.1,3.1) ellipse (0.36 and 0.26);
-  \shade[ball color=gristexto!60!black] (6.7,-0.5) ellipse (0.26 and 0.2);
-  \shade[ball color=gristexto!60!black] (-0.9,3.3) ellipse (0.3 and 0.22);
-  \node[rotulogris,anchor=north] at (6.7,-0.8) {fuentes exteriores};
-  % origen y vectores de posición
+  % ---------------------------------------------------- fuentes conocidas (en V)
+  \tikzset{fuenteV/.style={pattern={Lines[angle=45,distance=2.3pt,line width=0.45pt]},
+      pattern color=celeste,draw=celeste,line width=0.55pt},
+    fuenteExt/.style={pattern={Lines[angle=-45,distance=2.6pt,line width=0.4pt]},
+      pattern color=gristexto!80,draw=gristexto!80,line width=0.5pt,
+      dash pattern=on 1.6pt off 1.2pt}}
+  \path[fuenteV] plot[smooth cycle,tension=0.8] coordinates
+    {(0.72,1.15) (1.05,0.82) (1.6,0.92) (1.72,1.38) (1.3,1.66) (0.85,1.55)};
+  \path[fuenteV] plot[smooth cycle,tension=0.8] coordinates
+    {(3.62,0.72) (3.95,0.5) (4.3,0.7) (4.22,1.02) (3.85,1.08)};
+  \node[rotulo,text=celeste,anchor=east] at (0.62,1.25) {$\rho(\vrp)$};
+  % ---------------------------------------------------- fuentes exteriores
+  \path[fuenteExt] plot[smooth cycle,tension=0.8] coordinates
+    {(6.6,3.05) (7.0,2.75) (7.55,2.95) (7.45,3.4) (6.95,3.5)};
+  \path[fuenteExt] plot[smooth cycle,tension=0.8] coordinates
+    {(6.35,-0.55) (6.7,-0.8) (7.05,-0.55) (6.85,-0.25) (6.5,-0.25)};
+  \path[fuenteExt] plot[smooth cycle,tension=0.8] coordinates
+    {(-1.25,3.25) (-0.95,3.0) (-0.55,3.2) (-0.7,3.5) (-1.1,3.55)};
+  \node[rotulogris,anchor=north] at (6.75,-0.95) {fuentes exteriores};
+  % ---------------------------------------------------- elemento dS' y normales
+  \draw[celeste,line width=1.3pt,line cap=butt]
+    ($(5.2,2.0)+(-0.25*0.27,-0.25*0.963)$) -- ($(5.2,2.0)+(0.25*0.27,0.25*0.963)$);
+  \draw[vectorgris,draw=celeste] (5.2,2.0) -- ++(0.963*0.75,-0.27*0.75)
+    node[right,rotulo,text=celeste] {$\un$};
+  \node[rotulo,text=celeste,anchor=west] at (5.32,2.38) {$\dd S'$};
+  \draw[vectorgris,draw=celeste] (1.4,3.0) -- ++(-0.17*0.7,0.985*0.7)
+    node[above,rotulo,text=celeste] {$\un$};
+  % ---------------------------------------------------- vectores de posición
   \coordinate (O) at (-0.9,-1.55);
   \coordinate (rp) at (1.2,1.25);
   \coordinate (r) at (3.9,2.15);
-  \node[punto,label={[rotulogris]left:$O$}] at (O) {};
-  \draw[vectorgris] (O) -- (rp) node[pos=0.5,left=1pt,rotulo] {$\vrp$};
-  \draw[vectorgris] (O) -- (r) node[pos=0.42,below right=-1pt,rotulo] {$\vr$};
-  \draw[vector] (rp) -- (r) node[pos=0.45,above=1pt,rotulo,text=azul] {$\vR=\vr-\vrp$};
-  \node[punto] at (rp) {};
-  \node[puntoazul,label={[rotulo]right:$P$}] at (r) {};
-  % normales exteriores
-  \draw[vectororo] (5.2,2.0) -- ++(0.968*0.75,0.25*0.75) node[right,rotulo,text=oro] {$\un$};
-  \draw[vectororo] (1.4,3.0) -- ++(-0.34*0.75,0.94*0.75) node[left,rotulo,text=oro] {$\un$};
-  % rótulos del recinto
-  \node[rotulo,text=azul] at (2.6,2.75) {$V$};
+  \draw[gristexto,line width=0.5pt,-{Stealth[length=4.5pt,width=3.6pt]}] (O) -- (rp)
+    node[pos=0.45,left=1pt,rotulo,text=gristexto] {$\vrp$};
+  \draw[gristexto,line width=0.5pt,-{Stealth[length=4.5pt,width=3.6pt]}] (O) -- (r)
+    node[pos=0.42,below right=-1pt,rotulo,text=gristexto] {$\vr$};
+  \draw[vector] (rp) -- (r) node[pos=0.47,above=1pt,rotulo,text=azul] {$\vR=\vr-\vrp$};
+  \fill[texto] (O) circle (1.3pt) node[left=1pt,rotulogris] {$O$};
+  \fill[texto] (rp) circle (1.3pt);
+  \fill[texto] (r) circle (1.6pt) node[right=2pt,rotulo] {$P$};
+  % ---------------------------------------------------- rótulos del recinto
+  \node[rotulo,text=azul] at (2.6,2.7) {$V$};
   \node[rotulo,text=azul,anchor=west] at (4.75,0.05) {$S=\partial V$};
-  \draw[azulborde,line width=0.5pt] (-1.6,-2.05) rectangle (8.1,3.95);
 \end{tikzpicture}
