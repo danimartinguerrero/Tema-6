@@ -1,5 +1,5 @@
 % =====================================================================
-% Figura de portada: carga puntual frente a una esfera conductora a tierra.
+% Figura de portada (minimalista): carga puntual frente a una esfera conductora a tierra.
 % Líneas de campo exactas (método de las imágenes, a = 1, d = 2) con
 % degradado azul -> oro según el ángulo de salida; equipotenciales
 % punteadas. Datos: figuras/datos/portada.tex (generar_figuras.py).
@@ -10,7 +10,10 @@
     \clip (-2.25*\esc,-2.3*\esc) rectangle (5.05*\esc,2.3*\esc);
     \input{figuras/datos/portada.tex}
   \end{scope}
-  \shade[ball color=conductor!85!white] (0,0) circle (\esc);
-  \draw[gristexto!60,line width=0.4pt] (0,0) circle (\esc);
-  \node[cargapos,minimum size=9pt] at (2*\esc,0) {};
+  % esfera conductora: silueta plana y fina, sin volumen, para no romper
+  % la ligereza de las líneas
+  \fill[fondo] (0,0) circle (\esc);
+  \draw[gristexto!80,line width=0.5pt] (0,0) circle (\esc);
+  % carga puntual: punto plano
+  \fill[texto] (2*\esc,0) circle (1.6pt);
 \end{tikzpicture}
